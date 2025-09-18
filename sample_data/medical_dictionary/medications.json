@@ -1,0 +1,64 @@
+{
+  "medications": [
+    {
+      "name": "Metformin",
+      "generic_name": "metformin hydrochloride",
+      "brand_names": ["Glucophage", "Fortamet", "Riomet"],
+      "drug_class": "biguanide",
+      "indication": "Type 2 diabetes mellitus",
+      "mechanism": "Decreases hepatic glucose production and improves insulin sensitivity",
+      "dosage_forms": ["tablet", "extended-release tablet", "oral solution"],
+      "common_dosages": ["500mg", "850mg", "1000mg"],
+      "side_effects": ["nausea", "diarrhea", "lactic acidosis", "vitamin B12 deficiency"],
+      "contraindications": ["severe kidney disease", "metabolic acidosis", "diabetic ketoacidosis"]
+    },
+    {
+      "name": "Lisinopril",
+      "generic_name": "lisinopril",
+      "brand_names": ["Prinivil", "Zestril"],
+      "drug_class": "ACE inhibitor",
+      "indication": "Hypertension, heart failure, post-myocardial infarction",
+      "mechanism": "Inhibits angiotensin-converting enzyme, reducing vasoconstriction",
+      "dosage_forms": ["tablet"],
+      "common_dosages": ["2.5mg", "5mg", "10mg", "20mg", "40mg"],
+      "side_effects": ["dry cough", "hyperkalemia", "angioedema", "hypotension"],
+      "contraindications": ["pregnancy", "history of angioedema", "bilateral renal artery stenosis"]
+    },
+    {
+      "name": "Atorvastatin",
+      "generic_name": "atorvastatin calcium",
+      "brand_names": ["Lipitor"],
+      "drug_class": "HMG-CoA reductase inhibitor (statin)",
+      "indication": "Hyperlipidemia, cardiovascular disease prevention",
+      "mechanism": "Inhibits cholesterol synthesis by blocking HMG-CoA reductase",
+      "dosage_forms": ["tablet"],
+      "common_dosages": ["10mg", "20mg", "40mg", "80mg"],
+      "side_effects": ["muscle pain", "liver enzyme elevation", "rhabdomyolysis"],
+      "contraindications": ["active liver disease", "pregnancy", "breastfeeding"]
+    },
+    {
+      "name": "Omeprazole",
+      "generic_name": "omeprazole",
+      "brand_names": ["Prilosec", "Losec"],
+      "drug_class": "proton pump inhibitor",
+      "indication": "GERD, peptic ulcer disease, H. pylori eradication",
+      "mechanism": "Irreversibly blocks gastric acid production by inhibiting H+/K+-ATPase",
+      "dosage_forms": ["delayed-release capsule", "tablet"],
+      "common_dosages": ["10mg", "20mg", "40mg"],
+      "side_effects": ["headache", "abdominal pain", "C. difficile infection", "bone fractures"],
+      "contraindications": ["hypersensitivity to benzimidazoles"]
+    },
+    {
+      "name": "Levothyroxine",
+      "generic_name": "levothyroxine sodium",
+      "brand_names": ["Synthroid", "Levoxyl", "Unithroid"],
+      "drug_class": "thyroid hormone",
+      "indication": "Hypothyroidism, thyroid suppression therapy",
+      "mechanism": "Replaces or supplements endogenous thyroid hormone",
+      "dosage_forms": ["tablet", "capsule", "injection"],
+      "common_dosages": ["25mcg", "50mcg", "75mcg", "100mcg", "125mcg"],
+      "side_effects": ["palpitations", "tremor", "insomnia", "weight loss"],
+      "contraindications": ["untreated adrenal insufficiency", "acute myocardial infarction"]
+    }
+  ]
+}

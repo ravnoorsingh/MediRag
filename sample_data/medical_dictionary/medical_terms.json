@@ -1,0 +1,84 @@
+{
+  "medical_terms": [
+    {
+      "term": "Hypertension",
+      "definition": "A condition in which the blood vessels have persistently raised pressure (140/90 mmHg or higher)",
+      "category": "cardiovascular",
+      "synonyms": ["high blood pressure", "arterial hypertension"],
+      "icd_10": "I10",
+      "related_terms": ["systolic pressure", "diastolic pressure", "blood pressure"]
+    },
+    {
+      "term": "Diabetes Mellitus",
+      "definition": "A group of metabolic disorders characterized by high blood sugar levels over a prolonged period",
+      "category": "endocrine",
+      "synonyms": ["diabetes", "DM"],
+      "icd_10": "E11",
+      "related_terms": ["insulin", "glucose", "hyperglycemia", "blood sugar"]
+    },
+    {
+      "term": "Myocardial Infarction",
+      "definition": "A heart attack that occurs when blood flow to a part of the heart is blocked for a long enough time",
+      "category": "cardiovascular",
+      "synonyms": ["heart attack", "MI", "acute MI"],
+      "icd_10": "I21",
+      "related_terms": ["coronary artery", "chest pain", "cardiac enzymes"]
+    },
+    {
+      "term": "Pneumonia",
+      "definition": "An infection that inflames air sacs in one or both lungs, which may fill with fluid",
+      "category": "respiratory",
+      "synonyms": ["lung infection"],
+      "icd_10": "J18.9",
+      "related_terms": ["respiratory infection", "lung inflammation", "dyspnea"]
+    },
+    {
+      "term": "Chronic Kidney Disease",
+      "definition": "A condition characterized by gradual loss of kidney function over time",
+      "category": "renal",
+      "synonyms": ["CKD", "chronic renal disease"],
+      "icd_10": "N18",
+      "related_terms": ["creatinine", "GFR", "kidney function", "dialysis"]
+    },
+    {
+      "term": "Atrial Fibrillation",
+      "definition": "An irregular and often very rapid heart rhythm that can lead to blood clots in the heart",
+      "category": "cardiovascular",
+      "synonyms": ["AFib", "A-fib"],
+      "icd_10": "I48",
+      "related_terms": ["arrhythmia", "irregular heartbeat", "anticoagulation"]
+    },
+    {
+      "term": "Hyperlipidemia",
+      "definition": "A condition characterized by high levels of lipids (fats) in the blood",
+      "category": "metabolic",
+      "synonyms": ["dyslipidemia", "high cholesterol"],
+      "icd_10": "E78.5",
+      "related_terms": ["cholesterol", "triglycerides", "HDL", "LDL"]
+    },
+    {
+      "term": "Osteoarthritis",
+      "definition": "A degenerative joint disease that affects cartilage, the tissue that covers the ends of bones",
+      "category": "musculoskeletal",
+      "synonyms": ["OA", "degenerative arthritis"],
+      "icd_10": "M15-M19",
+      "related_terms": ["joint pain", "cartilage", "inflammation", "mobility"]
+    },
+    {
+      "term": "Depression",
+      "definition": "A mood disorder that causes persistent feelings of sadness and loss of interest",
+      "category": "psychiatric",
+      "synonyms": ["major depressive disorder", "MDD"],
+      "icd_10": "F32",
+      "related_terms": ["mood disorder", "mental health", "anxiety", "therapy"]
+    },
+    {
+      "term": "Gastroesophageal Reflux Disease",
+      "definition": "A chronic condition where stomach acid frequently flows back into the esophagus",
+      "category": "gastrointestinal",
+      "synonyms": ["GERD", "acid reflux"],
+      "icd_10": "K21.9",
+      "related_terms": ["heartburn", "esophagitis", "proton pump inhibitors"]
+    }
+  ]
+}

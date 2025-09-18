@@ -1,0 +1,118 @@
+{
+  "clinical_scenarios": [
+    {
+      "scenario_id": "CS001",
+      "scenario_type": "diagnostic_challenge",
+      "title": "Acute Abdominal Pain in Elderly Patient",
+      "patient_summary": {
+        "age": 72,
+        "gender": "male",
+        "presentation": "Acute onset severe abdominal pain, nausea, vomiting"
+      },
+      "clinical_question": "A 72-year-old male presents to the emergency department with sudden onset of severe abdominal pain that began 4 hours ago. The pain is located in the epigastrium and radiates to the back. He has associated nausea and vomiting. Vital signs show BP 90/60, HR 120, temp 100.8°F. What is the most likely diagnosis and immediate management?",
+      "key_findings": [
+        "Severe epigastric pain radiating to back",
+        "Hypotensive and tachycardic", 
+        "Low-grade fever",
+        "History of alcohol use disorder"
+      ],
+      "differential_diagnosis": [
+        "Acute pancreatitis",
+        "Peptic ulcer perforation",
+        "Mesenteric ischemia",
+        "Abdominal aortic aneurysm rupture"
+      ],
+      "recommended_workup": [
+        "CBC with differential",
+        "Comprehensive metabolic panel including lipase",
+        "Liver function tests",
+        "CT abdomen/pelvis with IV contrast",
+        "Arterial blood gas",
+        "Lactate level"
+      ],
+      "teaching_points": [
+        "Acute pancreatitis often presents with epigastric pain radiating to back",
+        "Hemodynamic instability suggests severe pancreatitis or alternative diagnosis",
+        "CT imaging is diagnostic test of choice for acute pancreatitis",
+        "Early aggressive fluid resuscitation is crucial"
+      ]
+    },
+    {
+      "scenario_id": "CS002",
+      "scenario_type": "medication_management",
+      "title": "Polypharmacy in Heart Failure Patient",
+      "patient_summary": {
+        "age": 68,
+        "gender": "female",
+        "conditions": ["Heart failure", "Diabetes", "Chronic kidney disease", "Depression"]
+      },
+      "clinical_question": "A 68-year-old female with heart failure (EF 30%), diabetes, CKD stage 3, and depression is on multiple medications. Recent labs show worsening kidney function (creatinine 2.1 from 1.8) and hyperkalemia (K+ 5.4). Current medications include lisinopril, metoprolol, furosemide, metformin, insulin, sertraline, and spironolactone. How would you modify her medication regimen?",
+      "current_medications": [
+        "Lisinopril 20mg daily",
+        "Metoprolol succinate 100mg daily",
+        "Furosemide 40mg twice daily",
+        "Spironolactone 25mg daily",
+        "Metformin 1000mg twice daily",
+        "Insulin glargine 30 units daily",
+        "Sertraline 100mg daily"
+      ],
+      "laboratory_concerns": [
+        "Rising creatinine (1.8 → 2.1 mg/dL)",
+        "Hyperkalemia (5.4 mEq/L)",
+        "eGFR declined to 28 mL/min/1.73m²"
+      ],
+      "medication_adjustments": [
+        "Hold spironolactone temporarily due to hyperkalemia",
+        "Reduce lisinopril dose to 10mg daily",
+        "Discontinue metformin due to eGFR <30",
+        "Consider switching to insulin-only diabetes management",
+        "Monitor potassium closely, consider Kayexalate if needed",
+        "Nephrology consultation for CKD management"
+      ],
+      "teaching_points": [
+        "ACE inhibitors and aldosterone antagonists can cause hyperkalemia",
+        "Metformin contraindicated when eGFR <30 mL/min/1.73m²",
+        "Heart failure medications need careful titration in CKD",
+        "Regular monitoring essential with polypharmacy"
+      ]
+    },
+    {
+      "scenario_id": "CS003",
+      "scenario_type": "preventive_care",
+      "title": "Cardiovascular Risk Assessment and Prevention",
+      "patient_summary": {
+        "age": 55,
+        "gender": "male",
+        "risk_factors": ["Hypertension", "Smoking", "Family history of CAD"]
+      },
+      "clinical_question": "A 55-year-old male smoker with hypertension and family history of coronary artery disease comes for routine care. He has no symptoms of chest pain or shortness of breath. Blood pressure is 145/92 on lisinopril 10mg daily. Labs show total cholesterol 220, LDL 145, HDL 38, triglycerides 180. How would you assess his cardiovascular risk and manage prevention?",
+      "risk_factors": [
+        "Male gender",
+        "Age 55",
+        "Hypertension (on treatment but not at goal)",
+        "Current smoking (1 pack per day × 20 years)",
+        "Low HDL cholesterol",
+        "Family history of premature CAD (father had MI at age 52)"
+      ],
+      "risk_calculation": {
+        "tool": "Pooled Cohort Equations",
+        "estimated_10_year_risk": "18.5%",
+        "risk_category": "High risk (>7.5%)"
+      },
+      "recommendations": [
+        "Intensive lifestyle counseling for smoking cessation",
+        "Increase lisinopril to 20mg daily, target BP <130/80",
+        "Initiate high-intensity statin therapy (atorvastatin 40mg daily)",
+        "Consider low-dose aspirin for primary prevention",
+        "Lifestyle modifications: diet, exercise, weight management",
+        "Follow-up in 3 months to assess response to therapy"
+      ],
+      "teaching_points": [
+        "Smoking is the most modifiable major risk factor",
+        "High-intensity statins reduce MACE by ~25% in primary prevention",
+        "Blood pressure goal <130/80 for most adults",
+        "Shared decision-making important for aspirin in primary prevention"
+      ]
+    }
+  ]
+}

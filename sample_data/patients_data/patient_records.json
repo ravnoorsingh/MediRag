@@ -1,0 +1,194 @@
+{
+  "patient_records": [
+    {
+      "patient_id": "P001",
+      "demographics": {
+        "age": 67,
+        "gender": "male",
+        "race": "caucasian",
+        "weight_kg": 85,
+        "height_cm": 175,
+        "bmi": 27.8
+      },
+      "chief_complaint": "Chest pain and shortness of breath for 3 hours",
+      "history_present_illness": "67-year-old male presents with sudden onset chest pain described as crushing, substernal, radiating to left arm. Associated with diaphoresis, nausea, and shortness of breath. Pain began while watching television and has been constant for 3 hours. No relief with rest.",
+      "past_medical_history": [
+        "Hypertension (diagnosed 2018)",
+        "Hyperlipidemia (diagnosed 2019)", 
+        "Type 2 diabetes mellitus (diagnosed 2020)"
+      ],
+      "medications": [
+        "Lisinopril 10mg daily",
+        "Atorvastatin 40mg daily",
+        "Metformin 1000mg twice daily"
+      ],
+      "social_history": {
+        "smoking": "30 pack-year history, quit 2 years ago",
+        "alcohol": "Social drinker, 2-3 drinks per week",
+        "exercise": "Sedentary lifestyle"
+      },
+      "vital_signs": {
+        "blood_pressure": "165/95 mmHg",
+        "heart_rate": "102 bpm",
+        "respiratory_rate": "22/min",
+        "temperature": "98.4°F",
+        "oxygen_saturation": "94% on room air"
+      },
+      "physical_examination": {
+        "general": "Diaphoretic, anxious-appearing male in mild distress",
+        "cardiovascular": "Tachycardic, regular rhythm, no murmurs, S3 gallop present",
+        "pulmonary": "Bilateral basilar crackles",
+        "extremities": "No pedal edema"
+      },
+      "laboratory_results": {
+        "troponin_I": "15.2 ng/mL (normal <0.04)",
+        "ck_mb": "45 ng/mL (normal <6.3)",
+        "bnp": "850 pg/mL (normal <100)",
+        "glucose": "245 mg/dL",
+        "creatinine": "1.8 mg/dL"
+      },
+      "diagnostic_tests": {
+        "ecg": "ST-elevation in leads V2-V6, Q waves in V3-V4",
+        "chest_xray": "Mild pulmonary edema, cardiomegaly",
+        "echocardiogram": "Ejection fraction 35%, anterior wall motion abnormality"
+      },
+      "diagnosis": "ST-elevation myocardial infarction (STEMI), acute heart failure",
+      "treatment_plan": [
+        "Emergent cardiac catheterization with PCI",
+        "Dual antiplatelet therapy (aspirin + clopidogrel)",
+        "High-intensity statin therapy",
+        "ACE inhibitor optimization",
+        "Beta-blocker initiation",
+        "Diabetes management optimization"
+      ],
+      "prognosis": "Guarded due to significant LV dysfunction, requires aggressive medical management and cardiac rehabilitation"
+    },
+    {
+      "patient_id": "P002", 
+      "demographics": {
+        "age": 45,
+        "gender": "female",
+        "race": "hispanic",
+        "weight_kg": 72,
+        "height_cm": 160,
+        "bmi": 28.1
+      },
+      "chief_complaint": "Increased thirst, frequent urination, and fatigue for 6 weeks",
+      "history_present_illness": "45-year-old female reports progressive polyuria, polydipsia, and fatigue over past 6 weeks. Drinking 4-5 liters water daily, urinating every 1-2 hours including nocturia 3-4 times per night. Also reports 15-pound unintentional weight loss and blurred vision.",
+      "past_medical_history": [
+        "Gestational diabetes (2015)",
+        "Family history of type 2 diabetes (mother, maternal grandmother)"
+      ],
+      "medications": [
+        "Multivitamin daily"
+      ],
+      "social_history": {
+        "smoking": "Never smoker",
+        "alcohol": "Occasional social drinking",
+        "exercise": "Walks 30 minutes 3x per week"
+      },
+      "vital_signs": {
+        "blood_pressure": "138/82 mmHg",
+        "heart_rate": "88 bpm",
+        "respiratory_rate": "16/min",
+        "temperature": "98.2°F",
+        "weight": "72 kg (down from 78 kg 2 months ago)"
+      },
+      "physical_examination": {
+        "general": "Well-appearing female, appears mildly dehydrated",
+        "skin": "Dry mucous membranes",
+        "cardiovascular": "Regular rate and rhythm, no murmurs",
+        "abdomen": "Soft, non-tender, no organomegaly",
+        "neurologic": "Intact, no focal deficits"
+      },
+      "laboratory_results": {
+        "fasting_glucose": "267 mg/dL",
+        "hba1c": "11.8%",
+        "random_glucose": "324 mg/dL",
+        "urine_ketones": "Moderate",
+        "c_peptide": "2.1 ng/mL (low normal)",
+        "creatinine": "0.9 mg/dL"
+      },
+      "diagnostic_tests": {
+        "urinalysis": "Glucose 3+, ketones 2+, protein trace",
+        "lipid_panel": "Total cholesterol 245 mg/dL, LDL 158 mg/dL, HDL 38 mg/dL, triglycerides 285 mg/dL"
+      },
+      "diagnosis": "Type 2 diabetes mellitus, newly diagnosed with diabetic ketosis",
+      "treatment_plan": [
+        "Insulin therapy initiation (basal-bolus regimen)",
+        "Diabetes education and nutrition counseling",
+        "Home glucose monitoring",
+        "Ophthalmology referral for diabetic retinopathy screening",
+        "Nephrology follow-up for microalbuminuria screening",
+        "Lipid management with statin therapy"
+      ],
+      "prognosis": "Good with appropriate diabetes management and lifestyle modifications"
+    },
+    {
+      "patient_id": "P003",
+      "demographics": {
+        "age": 78,
+        "gender": "female", 
+        "race": "african_american",
+        "weight_kg": 68,
+        "height_cm": 155,
+        "bmi": 28.3
+      },
+      "chief_complaint": "Progressive shortness of breath and ankle swelling for 3 weeks",
+      "history_present_illness": "78-year-old female with history of hypertension presents with gradually worsening dyspnea on exertion, progressing from 2 blocks to inability to walk across room. Also reports orthopnea requiring 3 pillows to sleep and bilateral ankle swelling. Denies chest pain but reports palpitations.",
+      "past_medical_history": [
+        "Hypertension (diagnosed 1995)",
+        "Atrial fibrillation (diagnosed 2020)",
+        "Chronic kidney disease stage 3 (diagnosed 2021)"
+      ],
+      "medications": [
+        "Amlodipine 10mg daily",
+        "Metoprolol 50mg twice daily", 
+        "Warfarin 5mg daily",
+        "Furosemide 20mg daily"
+      ],
+      "social_history": {
+        "smoking": "Never smoker",
+        "alcohol": "None",
+        "exercise": "Previously walked daily, now limited by symptoms"
+      },
+      "vital_signs": {
+        "blood_pressure": "145/88 mmHg",
+        "heart_rate": "110 bpm irregular",
+        "respiratory_rate": "24/min",
+        "temperature": "98.0°F",
+        "oxygen_saturation": "89% on room air, 94% on 2L NC"
+      },
+      "physical_examination": {
+        "general": "Elderly female in mild respiratory distress",
+        "cardiovascular": "Irregularly irregular rhythm, 2/6 systolic murmur, JVD to 12 cm",
+        "pulmonary": "Bilateral crackles to mid-lung fields",
+        "extremities": "2+ bilateral pitting edema to mid-calf",
+        "abdomen": "Soft, mild right upper quadrant tenderness, hepatomegaly"
+      },
+      "laboratory_results": {
+        "bnp": "1240 pg/mL",
+        "creatinine": "1.6 mg/dL (baseline 1.4)",
+        "sodium": "134 mEq/L",
+        "potassium": "3.8 mEq/L",
+        "hemoglobin": "10.2 g/dL"
+      },
+      "diagnostic_tests": {
+        "chest_xray": "Cardiomegaly, bilateral pleural effusions, pulmonary edema",
+        "ecg": "Atrial fibrillation, left ventricular hypertrophy",
+        "echocardiogram": "Ejection fraction 25%, severe LV dysfunction, moderate mitral regurgitation"
+      },
+      "diagnosis": "Acute decompensated heart failure, chronic systolic heart failure, atrial fibrillation with RVR",
+      "treatment_plan": [
+        "IV furosemide for diuresis",
+        "ACE inhibitor initiation (monitor creatinine)",
+        "Beta-blocker optimization",
+        "Rate control for atrial fibrillation",
+        "Anticoagulation continuation",
+        "Dietary sodium restriction (<2g daily)",
+        "Daily weights monitoring"
+      ],
+      "prognosis": "Guarded due to advanced heart failure, requires close monitoring and possible advanced therapies"
+    }
+  ]
+}

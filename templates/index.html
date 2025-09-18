@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Clinical Decision Support{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-brain me-3"></i>
+                    Smarter Clinical Decisions with AI
+                </h1>
+                <p class="lead mb-4">
+                    Transform complex patient data into trustworthy, evidence-backed clinical decisions. 
+                    Our AI-powered system scans patient records, extracts relevant data, and provides 
+                    three evidence-based care options with medical source citations.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('upload_patient') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-upload me-2"></i>Upload Patient Data
+                    </a>
+                    <button class="btn btn-outline-light btn-lg" onclick="loadSampleData(); window.location.href='{{ url_for('upload_patient') }}'">
+                        <i class="fas fa-vial me-2"></i>Try Sample Data
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <i class="fas fa-stethoscope" style="font-size: 8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold mb-3">Clinical Copilot Features</h2>
+                <p class="lead text-muted">Built to solve the challenge of information overload in modern healthcare</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-file-medical-alt text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>FHIR Data Processing</h5>
+                    <p class="text-muted">
+                        Seamlessly parse FHIR R4 patient records and extract relevant clinical data 
+                        tailored to your specific query.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-search-plus text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Intelligent Filtering</h5>
+                    <p class="text-muted">
+                        AI-powered relevance filtering ensures only pertinent medical history 
+                        and data points are considered for decision making.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-list-ol text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>3 Care Options</h5>
+                    <p class="text-muted">
+                        Receive three evidence-based treatment recommendations with confidence 
+                        levels and contraindication warnings.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-right text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Medical Citations</h5>
+                    <p class="text-muted">
+                        All recommendations include citations from peer-reviewed papers, 
+                        clinical guidelines, and medical textbooks.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="fw-bold mb-3">How It Works</h2>
+                <p class="lead text-muted">Four simple steps to evidence-based clinical decisions</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <span class="fw-bold">1</span>
+                    </div>
+                    <h5>Upload Patient Data</h5>
+                    <p class="text-muted">
+                        Upload FHIR JSON files or manually enter patient information including 
+                        demographics, medical history, and current symptoms.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <span class="fw-bold">2</span>
+                    </div>
+                    <h5>Ask Clinical Question</h5>
+                    <p class="text-muted">
+                        Pose your specific clinical question about diagnosis, treatment options, 
+                        medication adjustments, or follow-up care.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <span class="fw-bold">3</span>
+                    </div>
+                    <h5>AI Analysis</h5>
+                    <p class="text-muted">
+                        Our hybrid Neo4j + Qdrant system searches medical literature and 
+                        applies clinical reasoning to your patient's specific case.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <span class="fw-bold">4</span>
+                    </div>
+                    <h5>Get Recommendations</h5>
+                    <p class="text-muted">
+                        Receive three ranked care options with evidence citations, 
+                        contraindications, and monitoring requirements.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="h2 text-primary fw-bold">91+</div>
+                <p class="text-muted">Medical Literature Sources</p>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="h2 text-success fw-bold">3</div>
+                <p class="text-muted">Evidence-Based Options</p>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="h2 text-warning fw-bold">768</div>
+                <p class="text-muted">Dimensional Vector Space</p>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="h2 text-info fw-bold">FHIR</div>
+                <p class="text-muted">Standard Compatible</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-4">Ready to Experience AI-Powered Clinical Decision Support?</h2>
+                <p class="lead mb-4">
+                    Start making evidence-based clinical decisions with confidence. 
+                    Upload your first patient case or try our sample data to see the system in action.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{{ url_for('upload_patient') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Get Started Now
+                    </a>
+                    <button class="btn btn-outline-light btn-lg" onclick="checkSystemStatus()">
+                        <i class="fas fa-heartbeat me-2"></i>Check System Status
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-check system status on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Optional: Add any dashboard-specific JavaScript here
+        console.log('Clinical Decision Support Dashboard loaded');
+    });
+</script>
+{% endblock %}

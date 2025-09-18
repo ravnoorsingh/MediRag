@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Summary - Clinical Decision Support{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fw-bold">
+                        <i class="fas fa-user-md text-primary me-2"></i>
+                        Patient Summary & Clinical Query
+                    </h1>
+                    <div>
+                        <a href="{{ url_for('upload_patient') }}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-edit me-1"></i>Edit Patient Data
+                        </a>
+                        <button class="btn btn-outline-info" onclick="exportLastReport()">
+                            <i class="fas fa-download me-1"></i>Export Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Patient Summary Panel -->
+            <div class="col-lg-4">
+                <div class="patient-summary sticky-top" style="top: 20px;">
+                    <h3 class="fw-bold mb-3">
+                        <i class="fas fa-user text-success me-2"></i>Patient Overview
+                    </h3>
+                    
+                    <!-- Demographics -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Demographics</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1"><strong>Name:</strong> {{ patient.demographics.full_name or 'Not provided' }}</p>
+                            <p class="mb-1"><strong>Age:</strong> {{ patient.demographics.age }} years</p>
+                            <p class="mb-1"><strong>Gender:</strong> {{ patient.demographics.gender|title }}</p>
+                            {% if patient.demographics.phone %}
+                            <p class="mb-1"><strong>Phone:</strong> {{ patient.demographics.phone }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Chief Complaint -->
+                    {% if patient.chief_complaint %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">Chief Complaint</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ patient.chief_complaint }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Medical History -->
+                    {% if patient.past_medical_history %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">Medical History</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                {% for condition in patient.past_medical_history[:5] %}
+                                <li class="mb-1">
+                                    <i class="fas fa-circle text-danger me-2" style="font-size: 0.5em;"></i>
+                                    {{ condition }}
+                                </li>
+                                {% endfor %}
+                                {% if patient.past_medical_history|length > 5 %}
+                                <li class="text-muted">
+                                    <small>... and {{ patient.past_medical_history|length - 5 }} more conditions</small>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Current Medications -->
+                    {% if patient.medications %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">Current Medications</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                {% for medication in patient.medications[:5] %}
+                                <li class="mb-1">
+                                    <i class="fas fa-pills text-primary me-2"></i>
+                                    {{ medication }}
+                                </li>
+                                {% endfor %}
+                                {% if patient.medications|length > 5 %}
+                                <li class="text-muted">
+                                    <small>... and {{ patient.medications|length - 5 }} more medications</small>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Allergies -->
+                    {% if patient.allergies %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="mb-0">Allergies</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                {% for allergy in patient.allergies %}
+                                <li class="mb-1">
+                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                    {{ allergy }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Vital Signs -->
+                    {% if patient.vital_signs %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="mb-0">Vital Signs</h6>
+                        </div>
+                        <div class="card-body">
+                            {% for vital, value in patient.vital_signs.items() %}
+                            <p class="mb-1">
+                                <strong>{{ vital }}:</strong> {{ value }}
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Clinical Query Panel -->
+            <div class="col-lg-8">
+                <div class="query-section">
+                    <h3 class="fw-bold mb-4">
+                        <i class="fas fa-search text-primary me-2"></i>Clinical Query Interface
+                    </h3>
+                    
+                    <!-- Query Form -->
+                    <form id="clinical-query-form">
+                        <div class="mb-4">
+                            <label for="clinical_question" class="form-label">
+                                <strong>What is your clinical question?</strong>
+                            </label>
+                            <textarea class="form-control form-control-lg" id="clinical_question" 
+                                      name="clinical_question" rows="3" required
+                                      placeholder="Examples:&#10;• What are the best treatment options for this patient's hypertension?&#10;• Should we adjust the diabetes medication based on recent HbA1c?&#10;• What additional tests should be ordered for this presentation?&#10;• What are the differential diagnoses to consider?"></textarea>
+                            <div class="form-text">
+                                Be specific about what clinical decision you need help with
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="chief_complaint" class="form-label">Chief Complaint (Update if needed)</label>
+                                <input type="text" class="form-control" id="chief_complaint" 
+                                       name="chief_complaint" value="{{ patient.chief_complaint }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="urgency" class="form-label">Urgency Level</label>
+                                <select class="form-control" id="urgency" name="urgency">
+                                    <option value="routine">Routine</option>
+                                    <option value="urgent">Urgent</option>
+                                    <option value="followup">Follow-up</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Query Templates -->
+                        <div class="mb-4">
+                            <h6>Quick Query Templates:</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm" 
+                                        onclick="setQuickQuery('treatment')">Treatment Options</button>
+                                <button type="button" class="btn btn-outline-success btn-sm" 
+                                        onclick="setQuickQuery('diagnosis')">Differential Diagnosis</button>
+                                <button type="button" class="btn btn-outline-info btn-sm" 
+                                        onclick="setQuickQuery('medication')">Medication Review</button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" 
+                                        onclick="setQuickQuery('tests')">Additional Tests</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                        onclick="setQuickQuery('prognosis')">Prognosis & Follow-up</button>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-brain me-2"></i>Get AI Clinical Recommendations
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Loading State -->
+                    <div id="loading-section" class="text-center py-5 loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="mt-3">Analyzing patient data and searching medical literature...</h5>
+                        <p class="text-muted">This may take 30-60 seconds</p>
+                    </div>
+                    
+                    <!-- Results Section -->
+                    <div id="results-section" style="display: none;">
+                        <hr class="my-5">
+                        <h3 class="fw-bold mb-4">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            Evidence-Based Clinical Recommendations
+                        </h3>
+                        
+                        <div id="results-content">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Quick query templates
+    const queryTemplates = {
+        'treatment': `What are the best evidence-based treatment options for this patient's condition? Please consider their medical history, current medications, and potential contraindications.`,
+        'diagnosis': `What are the most likely differential diagnoses for this patient's presentation? Please rank by probability based on symptoms and clinical findings.`,
+        'medication': `Should any of this patient's current medications be adjusted, discontinued, or changed? Are there any drug interactions or contraindications to consider?`,
+        'tests': `What additional diagnostic tests, laboratory studies, or imaging should be ordered for this patient? Please prioritize based on clinical utility and cost-effectiveness.`,
+        'prognosis': `What is the expected prognosis for this patient? What follow-up care and monitoring is recommended?`
+    };
+    
+    function setQuickQuery(template) {
+        document.getElementById('clinical_question').value = queryTemplates[template];
+    }
+    
+    function exportLastReport() {
+        window.open('/export/report', '_blank');
+    }
+    
+    // Handle form submission
+    document.getElementById('clinical-query-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const queryData = {
+            clinical_question: formData.get('clinical_question'),
+            chief_complaint: formData.get('chief_complaint'),
+            urgency: formData.get('urgency')
+        };
+        
+        // Show loading state
+        document.getElementById('loading-section').style.display = 'block';
+        document.getElementById('results-section').style.display = 'none';
+        document.querySelector('.query-section').scrollIntoView({ behavior: 'smooth' });
+        
+        try {
+            const response = await fetch('/clinical/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(queryData)
+            });
+            
+            const result = await response.json();
+            
+            // Hide loading state
+            document.getElementById('loading-section').style.display = 'none';
+            
+            if (result.success) {
+                displayResults(result.result);
+            } else {
+                displayError(result.error || 'Unknown error occurred');
+            }
+            
+        } catch (error) {
+            document.getElementById('loading-section').style.display = 'none';
+            displayError('Network error: ' + error.message);
+        }
+    });
+    
+    function displayResults(data) {
+        const resultsContent = document.getElementById('results-content');
+        
+        // Build results HTML
+        let html = `
+            <div class="alert alert-info">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Query ID:</strong> ${data.query_info.query_id}<br>
+                        <strong>Processed:</strong> ${new Date(data.query_info.timestamp).toLocaleString()}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Evidence Quality:</strong> <span class="badge bg-${getQualityColor(data.evidence_quality.overall_quality)}">${data.evidence_quality.overall_quality}</span><br>
+                        <strong>Sources Used:</strong> ${data.evidence_quality.evidence_count}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Patient Summary
+        html += `
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Clinical Context</h5>
+                </div>
+                <div class="card-body">
+                    <strong>Patient:</strong> ${data.patient_summary.demographics.age} year old ${data.patient_summary.demographics.gender}<br>
+                    <strong>Key Conditions:</strong> ${data.patient_summary.key_conditions.join(', ') || 'None recorded'}<br>
+                    <strong>Risk Factors:</strong> ${data.patient_summary.risk_factors.join(', ') || 'None identified'}
+                </div>
+            </div>
+        `;
+        
+        // Care Options
+        html += `<h4 class="mb-3">Recommended Care Options</h4>`;
+        
+        data.care_options.forEach((option, index) => {
+            html += `
+                <div class="card mb-4 care-option">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <span class="badge bg-primary me-2">${index + 1}</span>
+                            ${option.title}
+                        </h5>
+                        <span class="confidence-${option.confidence.toLowerCase()}">
+                            <i class="fas fa-circle me-1"></i>${option.confidence} Confidence
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6>Description:</h6>
+                            <p>${option.description}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Clinical Rationale:</h6>
+                            <p>${option.rationale}</p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Contraindications:</h6>
+                                <ul class="list-unstyled">
+                                    ${option.contraindications.map(item => `<li><i class="fas fa-exclamation-triangle text-warning me-2"></i>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Monitoring Required:</h6>
+                                <ul class="list-unstyled">
+                                    ${option.monitoring_requirements.map(item => `<li><i class="fas fa-eye text-info me-2"></i>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Expected Outcomes:</h6>
+                            <p>${option.expected_outcomes}</p>
+                        </div>
+                        
+                        ${option.evidence.length > 0 ? `
+                            <div>
+                                <h6>Supporting Evidence:</h6>
+                                <div class="row">
+                                    ${option.evidence.map((evidence, idx) => `
+                                        <div class="col-md-6 mb-2">
+                                            <div class="border p-2 rounded">
+                                                <strong>[${idx + 1}] ${evidence.source_type.replace('_', ' ').toUpperCase()}</strong><br>
+                                                <em>${evidence.title}</em><br>
+                                                <small class="text-muted">${evidence.excerpt}</small><br>
+                                                <span class="evidence-badge">Confidence: ${(evidence.confidence_score * 100).toFixed(1)}%</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Follow-up Recommendations
+        html += `
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Follow-up Recommendations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Immediate Actions:</h6>
+                            <ul>
+                                ${data.follow_up_recommendations.immediate_actions.map(action => `<li>${action}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Monitoring Schedule:</h6>
+                            <ul>
+                                ${data.follow_up_recommendations.monitoring_schedule.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <p><strong>Timeline:</strong> ${data.follow_up_recommendations.follow_up_timeline}</p>
+                </div>
+            </div>
+        `;
+        
+        resultsContent.innerHTML = html;
+        document.getElementById('results-section').style.display = 'block';
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function displayError(message) {
+        const resultsContent = document.getElementById('results-content');
+        resultsContent.innerHTML = `
+            <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Error</h5>
+                <p>${message}</p>
+                <p>Please try again or contact support if the problem persists.</p>
+            </div>
+        `;
+        document.getElementById('results-section').style.display = 'block';
+    }
+    
+    function getQualityColor(quality) {
+        switch(quality.toLowerCase()) {
+            case 'high': return 'success';
+            case 'medium': return 'warning';
+            case 'low': return 'danger';
+            default: return 'secondary';
+        }
+    }
+</script>
+{% endblock %}

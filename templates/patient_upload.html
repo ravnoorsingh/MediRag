@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Data Upload - Clinical Decision Support{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bold mb-3">
+                        <i class="fas fa-user-plus text-primary me-2"></i>
+                        Patient Data Upload
+                    </h1>
+                    <p class="lead text-muted">
+                        Upload patient information to begin clinical decision support analysis
+                    </p>
+                </div>
+
+                <!-- Upload Type Selection -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-upload me-2"></i>Choose Upload Method
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-grid">
+                                            <button class="btn btn-outline-primary btn-lg mb-2" 
+                                                    onclick="showUploadType('fhir')">
+                                                <i class="fas fa-file-code me-2"></i>
+                                                Upload FHIR JSON
+                                            </button>
+                                            <small class="text-muted text-center">
+                                                Upload FHIR R4 Bundle or individual resources
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-grid">
+                                            <button class="btn btn-outline-success btn-lg mb-2" 
+                                                    onclick="showUploadType('manual')">
+                                                <i class="fas fa-edit me-2"></i>
+                                                Manual Entry
+                                            </button>
+                                            <small class="text-muted text-center">
+                                                Enter patient information manually
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-3">
+                                    <button class="btn btn-info" onclick="loadSampleData()">
+                                        <i class="fas fa-vial me-2"></i>Load Sample Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FHIR Upload Form -->
+                <div id="fhir-upload" class="upload-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-upload me-2"></i>FHIR Data Upload
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="upload_type" value="fhir">
+                                
+                                <div class="mb-4">
+                                    <label for="fhir_file" class="form-label">
+                                        <strong>Select FHIR JSON File</strong>
+                                    </label>
+                                    <input type="file" class="form-control form-control-lg" 
+                                           id="fhir_file" name="fhir_file" accept=".json"
+                                           onchange="validateFHIRFile(this)">
+                                    <div class="form-text">
+                                        Supported: FHIR R4 Bundle JSON files (max 16MB)
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>FHIR Upload Requirements:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            <li>FHIR R4 format</li>
+                                            <li>Must contain Patient resource</li>
+                                            <li>Supported resources: Patient, Condition, MedicationRequest, Observation, AllergyIntolerance</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-secondary me-md-2" 
+                                            onclick="hideUploadSections()">Cancel</button>
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fas fa-upload me-2"></i>Upload & Parse FHIR
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Entry Form -->
+                <div id="manual-upload" class="upload-section" style="display: none;">
+                    <form method="POST">
+                        <input type="hidden" name="upload_type" value="manual">
+                        
+                        <!-- Patient Demographics -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user me-2"></i>Patient Demographics
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="patient_id" class="form-label">Patient ID</label>
+                                        <input type="text" class="form-control" id="patient_id" 
+                                               name="patient_id" placeholder="Auto-generated if blank">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="full_name" class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" id="full_name" 
+                                               name="full_name" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="age" class="form-label">Age *</label>
+                                        <input type="number" class="form-control" id="age" 
+                                               name="age" min="0" max="120" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="gender" class="form-label">Gender *</label>
+                                        <select class="form-control" id="gender" name="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                            <option value="unknown">Unknown</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clinical Information -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-notes-medical me-2"></i>Clinical Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="chief_complaint" class="form-label">Chief Complaint *</label>
+                                    <textarea class="form-control" id="chief_complaint" name="chief_complaint" 
+                                              rows="3" required placeholder="Patient's primary concern or reason for visit"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="medical_history" class="form-label">Past Medical History</label>
+                                    <textarea class="form-control" id="medical_history" name="medical_history" 
+                                              rows="5" placeholder="Enter each condition on a separate line&#10;e.g.:&#10;Hypertension (diagnosed 2020)&#10;Type 2 diabetes mellitus&#10;Hyperlipidemia"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="medications" class="form-label">Current Medications</label>
+                                    <textarea class="form-control" id="medications" name="medications" 
+                                              rows="5" placeholder="Enter each medication on a separate line&#10;e.g.:&#10;Lisinopril 10mg daily&#10;Metformin 1000mg twice daily&#10;Atorvastatin 40mg daily"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="allergies" class="form-label">Allergies & Adverse Reactions</label>
+                                    <textarea class="form-control" id="allergies" name="allergies" 
+                                              rows="3" placeholder="Enter each allergy on a separate line&#10;e.g.:&#10;Penicillin (rash)&#10;Sulfa drugs&#10;NKDA (No Known Drug Allergies)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clinical Data -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Clinical Data
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="vital_signs" class="form-label">Vital Signs</label>
+                                        <textarea class="form-control" id="vital_signs" name="vital_signs" 
+                                                  rows="6" placeholder="Enter each vital sign on a separate line&#10;e.g.:&#10;Blood Pressure: 150/90 mmHg&#10;Heart Rate: 78 bpm&#10;Temperature: 98.6°F&#10;Respiratory Rate: 16/min&#10;Oxygen Saturation: 98%"></textarea>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lab_results" class="form-label">Laboratory Results</label>
+                                        <textarea class="form-control" id="lab_results" name="lab_results" 
+                                                  rows="6" placeholder="Enter each lab result on a separate line&#10;e.g.:&#10;HbA1c: 7.2%&#10;Total Cholesterol: 180 mg/dL&#10;Creatinine: 1.1 mg/dL&#10;CBC: WNL&#10;TSH: 2.1 mIU/L"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+                            <button type="button" class="btn btn-secondary me-md-2" 
+                                    onclick="hideUploadSections()">Cancel</button>
+                            <button type="button" class="btn btn-info me-md-2" onclick="loadSampleData()">
+                                <i class="fas fa-vial me-2"></i>Load Sample Data
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Save Patient Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showUploadType(type) {
+        // Hide all upload sections
+        hideUploadSections();
+        
+        // Show selected upload type
+        if (type === 'fhir') {
+            document.getElementById('fhir-upload').style.display = 'block';
+        } else if (type === 'manual') {
+            document.getElementById('manual-upload').style.display = 'block';
+        }
+        
+        // Scroll to the form
+        document.querySelector('.upload-section[style*="block"]').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    function hideUploadSections() {
+        document.querySelectorAll('.upload-section').forEach(section => {
+            section.style.display = 'none';
+        });
+    }
+    
+    function validateFHIRFile(input) {
+        const file = input.files[0];
+        if (file) {
+            const maxSize = 16 * 1024 * 1024; // 16MB
+            if (file.size > maxSize) {
+                alert('File size exceeds 16MB limit. Please select a smaller file.');
+                input.value = '';
+                return false;
+            }
+            
+            if (!file.name.toLowerCase().endsWith('.json')) {
+                alert('Please select a JSON file.');
+                input.value = '';
+                return false;
+            }
+            
+            console.log(`FHIR file selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        }
+        return true;
+    }
+    
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                const uploadType = form.querySelector('input[name="upload_type"]')?.value;
+                
+                if (uploadType === 'fhir') {
+                    const fileInput = form.querySelector('input[type="file"]');
+                    if (!fileInput.files.length) {
+                        event.preventDefault();
+                        alert('Please select a FHIR JSON file to upload.');
+                        return;
+                    }
+                }
+                
+                if (uploadType === 'manual') {
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let hasError = false;
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            field.classList.add('is-invalid');
+                            hasError = true;
+                        } else {
+                            field.classList.remove('is-invalid');
+                        }
+                    });
+                    
+                    if (hasError) {
+                        event.preventDefault();
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

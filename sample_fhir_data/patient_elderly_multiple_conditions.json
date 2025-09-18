@@ -1,0 +1,403 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-elderly-multiple-conditions",
+  "type": "collection",
+  "timestamp": "2025-09-18T11:45:00Z",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-004",
+        "identifier": [
+          {
+            "system": "http://hospital.example.com/patient-ids",
+            "value": "MRN-22222"
+          }
+        ],
+        "name": [
+          {
+            "family": "Wilson",
+            "given": ["Dorothy", "Mae"],
+            "prefix": ["Mrs."]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1938-12-03",
+        "address": [
+          {
+            "line": ["321 Elm Street", "Apt 4B"],
+            "city": "Miami",
+            "state": "FL",
+            "postalCode": "33101",
+            "country": "US"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-555-321-6547",
+            "use": "home"
+          }
+        ],
+        "contact": [
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+                    "code": "C",
+                    "display": "Emergency Contact"
+                  }
+                ]
+              }
+            ],
+            "name": {
+              "family": "Wilson",
+              "given": ["Susan"]
+            },
+            "telecom": [
+              {
+                "system": "phone",
+                "value": "+1-555-111-2222"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-dementia",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "26929004",
+              "display": "Alzheimer's disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "G30.9",
+              "display": "Alzheimer's disease, unspecified"
+            }
+          ]
+        },
+        "onsetDateTime": "2021-03-10",
+        "recordedDate": "2021-03-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-osteoporosis",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "64859006",
+              "display": "Osteoporosis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "M81.0",
+              "display": "Age-related osteoporosis without current pathological fracture"
+            }
+          ]
+        },
+        "onsetDateTime": "2015-08-20",
+        "recordedDate": "2015-08-25"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-chronic-kidney-disease",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709044004",
+              "display": "Chronic kidney disease stage 3a"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "N18.3",
+              "display": "Chronic kidney disease, stage 3 (moderate)"
+            }
+          ]
+        },
+        "onsetDateTime": "2019-06-15",
+        "recordedDate": "2019-06-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-donepezil",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "996740",
+              "display": "Donepezil hydrochloride 10 MG Oral Tablet"
+            }
+          ],
+          "text": "Donepezil 10mg"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Take 1 tablet by mouth once daily at bedtime",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d",
+                "when": ["HS"]
+              }
+            }
+          }
+        ],
+        "authoredOn": "2021-03-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-alendronate",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1000048",
+              "display": "Alendronate sodium 70 MG Oral Tablet"
+            }
+          ],
+          "text": "Alendronate 70mg"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Take 1 tablet by mouth once weekly on empty stomach with full glass of water, remain upright for 30 minutes",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "wk"
+              }
+            }
+          }
+        ],
+        "authoredOn": "2015-08-25"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-sulfa",
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": ["medication"],
+        "criticality": "high",
+        "code": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "10180",
+              "display": "Sulfamethoxazole"
+            }
+          ]
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "271807003",
+                    "display": "Skin rash"
+                  }
+                ]
+              }
+            ],
+            "severity": "moderate"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-mmse",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72133-2",
+              "display": "Mini-Mental State Examination [MMSE]"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "effectiveDateTime": "2025-09-01",
+        "valueQuantity": {
+          "value": 18,
+          "system": "http://unitsofmeasure.org",
+          "code": "1"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 24
+            },
+            "text": "Normal: 24-30"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "L",
+                "display": "Low"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-creatinine",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-004"
+        },
+        "effectiveDateTime": "2025-09-10",
+        "valueQuantity": {
+          "value": 1.8,
+          "unit": "mg/dL",
+          "system": "http://unitsofmeasure.org",
+          "code": "mg/dL"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 0.6,
+              "unit": "mg/dL"
+            },
+            "high": {
+              "value": 1.2,
+              "unit": "mg/dL"
+            },
+            "text": "Normal: 0.6-1.2 mg/dL"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "H",
+                "display": "High"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

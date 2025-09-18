@@ -1,0 +1,72 @@
+{
+  "medical_textbooks": [
+    {
+      "title": "Harrison's Principles of Internal Medicine",
+      "edition": "21st Edition",
+      "authors": ["Dennis Kasper", "Anthony Fauci", "Stephen Hauser", "Dan Longo"],
+      "publisher": "McGraw-Hill Education",
+      "year": 2022,
+      "isbn": "978-1264268504",
+      "chapters": [
+        {
+          "chapter_number": 45,
+          "chapter_title": "Hypertension",
+          "key_content": "Hypertension affects approximately 45% of adults and is defined as systolic BP ≥130 mmHg or diastolic BP ≥80 mmHg. Primary hypertension accounts for 90-95% of cases. Treatment includes lifestyle modifications and pharmacotherapy with ACE inhibitors, ARBs, calcium channel blockers, or thiazide diuretics as first-line agents.",
+          "important_concepts": [
+            "White coat hypertension vs sustained hypertension",
+            "Target organ damage assessment",
+            "Resistant hypertension evaluation",
+            "Secondary causes of hypertension"
+          ],
+          "diagnostic_workup": "Initial evaluation should include CBC, comprehensive metabolic panel, lipid profile, urinalysis, ECG, and assessment of cardiovascular risk factors"
+        },
+        {
+          "chapter_number": 372,
+          "chapter_title": "Diabetes Mellitus",
+          "key_content": "Diabetes mellitus is characterized by hyperglycemia due to defects in insulin secretion, insulin action, or both. Type 1 diabetes results from autoimmune destruction of pancreatic beta cells, while type 2 diabetes involves insulin resistance and relative insulin deficiency. Complications include retinopathy, nephropathy, neuropathy, and accelerated cardiovascular disease.",
+          "important_concepts": [
+            "Pathophysiology of type 1 vs type 2 diabetes",
+            "Acute complications: DKA and HHS",
+            "Chronic complications and prevention",
+            "Insulin therapy and oral hypoglycemic agents"
+          ],
+          "diagnostic_workup": "Diagnosis confirmed by HbA1c ≥6.5%, fasting glucose ≥126 mg/dL, or 2-hour OGTT ≥200 mg/dL on two occasions"
+        }
+      ]
+    },
+    {
+      "title": "Robbins and Cotran Pathologic Basis of Disease",
+      "edition": "10th Edition", 
+      "authors": ["Vinay Kumar", "Abul Abbas", "Jon Aster"],
+      "publisher": "Elsevier",
+      "year": 2021,
+      "isbn": "978-0323531139",
+      "chapters": [
+        {
+          "chapter_number": 12,
+          "chapter_title": "The Heart",
+          "key_content": "Cardiovascular disease remains the leading cause of death globally. Atherosclerosis is the underlying pathology in most cases, involving endothelial dysfunction, lipid accumulation, inflammation, and plaque formation. Acute coronary syndromes result from plaque rupture or erosion leading to thrombosis.",
+          "important_concepts": [
+            "Atherosclerosis pathogenesis and progression",
+            "Myocardial infarction types and complications", 
+            "Heart failure pathophysiology",
+            "Valvular heart disease mechanisms"
+          ],
+          "morphologic_features": "Atherosclerotic plaques show fibrous caps, lipid cores, inflammatory infiltrates, and potential calcification or ulceration"
+        },
+        {
+          "chapter_number": 24,
+          "chapter_title": "The Endocrine System",
+          "key_content": "Endocrine disorders result from hormone excess, deficiency, or resistance. Diabetes mellitus involves beta cell destruction (type 1) or insulin resistance with beta cell dysfunction (type 2). Complications arise from chronic hyperglycemia causing advanced glycation end products and oxidative stress.",
+          "important_concepts": [
+            "Beta cell pathology in diabetes types",
+            "Diabetic complications pathogenesis",
+            "Thyroid disorders and morphology",
+            "Adrenal disorders and manifestations"
+          ],
+          "morphologic_features": "Diabetic nephropathy shows glomerular basement membrane thickening, mesangial expansion, and nodular glomerulosclerosis"
+        }
+      ]
+    }
+  ]
+}

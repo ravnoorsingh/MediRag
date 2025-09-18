@@ -1,0 +1,59 @@
+{
+  "procedures": [
+    {
+      "procedure_name": "Coronary Angioplasty",
+      "cpt_code": "92920",
+      "category": "cardiovascular",
+      "description": "A procedure to open blocked or narrowed coronary arteries using a balloon catheter",
+      "indications": ["coronary artery disease", "myocardial infarction", "unstable angina"],
+      "technique": "Percutaneous transluminal coronary angioplasty with or without stent placement",
+      "complications": ["bleeding", "artery dissection", "restenosis", "stroke"],
+      "recovery_time": "1-3 days hospital stay, 1-2 weeks full recovery",
+      "alternative_procedures": ["coronary artery bypass surgery", "medical management"]
+    },
+    {
+      "procedure_name": "Colonoscopy",
+      "cpt_code": "45378",
+      "category": "gastroenterology",
+      "description": "Endoscopic examination of the large bowel and terminal ileum",
+      "indications": ["colorectal cancer screening", "inflammatory bowel disease", "gastrointestinal bleeding"],
+      "technique": "Flexible colonoscope inserted through rectum to visualize colon",
+      "complications": ["perforation", "bleeding", "sedation reactions"],
+      "recovery_time": "Same day procedure, 24 hours full recovery",
+      "alternative_procedures": ["CT colonography", "fecal occult blood test", "flexible sigmoidoscopy"]
+    },
+    {
+      "procedure_name": "Total Knee Replacement",
+      "cpt_code": "27447",
+      "category": "orthopedic",
+      "description": "Surgical replacement of the knee joint with artificial components",
+      "indications": ["severe osteoarthritis", "rheumatoid arthritis", "knee deformity"],
+      "technique": "Removal of damaged cartilage and bone, replacement with prosthetic components",
+      "complications": ["infection", "blood clots", "implant failure", "stiffness"],
+      "recovery_time": "3-5 days hospital stay, 3-6 months full recovery",
+      "alternative_procedures": ["partial knee replacement", "arthroscopy", "conservative management"]
+    },
+    {
+      "procedure_name": "Appendectomy",
+      "cpt_code": "44970",
+      "category": "general surgery",
+      "description": "Surgical removal of the appendix",
+      "indications": ["acute appendicitis", "chronic appendicitis"],
+      "technique": "Laparoscopic or open surgical removal of vermiform appendix",
+      "complications": ["wound infection", "bleeding", "bowel obstruction"],
+      "recovery_time": "1-3 days hospital stay, 2-4 weeks full recovery",
+      "alternative_procedures": ["antibiotic therapy (in select cases)"]
+    },
+    {
+      "procedure_name": "Cataract Surgery",
+      "cpt_code": "66984",
+      "category": "ophthalmology",
+      "description": "Surgical removal of clouded natural lens and replacement with artificial lens",
+      "indications": ["cataracts affecting vision", "lens-induced glaucoma"],
+      "technique": "Phacoemulsification with intraocular lens implantation",
+      "complications": ["infection", "retinal detachment", "posterior capsule opacification"],
+      "recovery_time": "Same day procedure, 4-6 weeks full recovery",
+      "alternative_procedures": ["observation (if minimal visual impact)"]
+    }
+  ]
+}

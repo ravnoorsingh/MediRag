@@ -1,0 +1,55 @@
+{
+  "research_papers": [
+    {
+      "title": "Efficacy of ACE Inhibitors in Hypertensive Patients with Diabetes",
+      "authors": ["Dr. Sarah Johnson", "Dr. Michael Chen", "Dr. Lisa Rodriguez"],
+      "journal": "New England Journal of Medicine",
+      "year": 2023,
+      "doi": "10.1056/NEJMoa2023001",
+      "abstract": "This randomized controlled trial examined the efficacy of ACE inhibitors versus other antihypertensive medications in 2,500 hypertensive patients with type 2 diabetes. Results showed a 23% reduction in cardiovascular events with ACE inhibitor therapy compared to calcium channel blockers. The study followed patients for 5 years with primary endpoints including myocardial infarction, stroke, and cardiovascular death.",
+      "key_findings": [
+        "ACE inhibitors reduced cardiovascular events by 23% compared to calcium channel blockers",
+        "Significant reduction in proteinuria was observed in the ACE inhibitor group",
+        "No significant difference in all-cause mortality between groups",
+        "ACE inhibitor group showed better preservation of kidney function"
+      ],
+      "methodology": "Double-blind, randomized controlled trial with 5-year follow-up",
+      "patient_population": "Adults aged 45-75 with hypertension and type 2 diabetes",
+      "clinical_implications": "ACE inhibitors should be considered first-line therapy for hypertensive diabetic patients, particularly those with proteinuria or early kidney disease."
+    },
+    {
+      "title": "Machine Learning Approaches to Early Detection of Sepsis in ICU Patients",
+      "authors": ["Dr. Robert Kim", "Dr. Amanda Foster", "Dr. James Liu"],
+      "journal": "The Lancet Digital Health",
+      "year": 2023,
+      "doi": "10.1016/S2589-7500(23)00045-2",
+      "abstract": "We developed and validated a machine learning algorithm using electronic health record data to predict sepsis onset 6 hours before conventional clinical criteria. The algorithm analyzed vital signs, laboratory values, and clinical notes from 50,000 ICU admissions across 12 hospitals. The model achieved an AUROC of 0.91 with 85% sensitivity and 87% specificity.",
+      "key_findings": [
+        "Algorithm predicted sepsis 6 hours before clinical diagnosis with 85% sensitivity",
+        "Integration of clinical notes improved model performance by 12%",
+        "Model performed consistently across different hospital systems",
+        "Early prediction could reduce mortality by up to 18%"
+      ],
+      "methodology": "Retrospective analysis using gradient boosting and natural language processing",
+      "patient_population": "Adult ICU patients with length of stay >24 hours",
+      "clinical_implications": "Early warning systems using ML could significantly improve sepsis outcomes and reduce healthcare costs through timely intervention."
+    },
+    {
+      "title": "Impact of Telemedicine on Chronic Disease Management During COVID-19",
+      "authors": ["Dr. Maria Gonzalez", "Dr. David Park", "Dr. Jennifer Adams"],
+      "journal": "Journal of Medical Internet Research",
+      "year": 2022,
+      "doi": "10.2196/35842",
+      "abstract": "This multi-center cohort study evaluated the effectiveness of telemedicine for managing chronic diseases during the COVID-19 pandemic. We compared health outcomes between patients receiving telemedicine care versus traditional in-person care for diabetes, hypertension, and heart failure management across 15,000 patients from March 2020 to March 2022.",
+      "key_findings": [
+        "No significant difference in HbA1c control between telemedicine and in-person care",
+        "Blood pressure control improved in telemedicine group (78% vs 71% at goal)",
+        "Heart failure readmission rates were similar between groups",
+        "Patient satisfaction scores were 15% higher for telemedicine"
+      ],
+      "methodology": "Prospective cohort study with propensity score matching",
+      "patient_population": "Adults with diabetes, hypertension, or heart failure",
+      "clinical_implications": "Telemedicine can effectively maintain chronic disease management with high patient satisfaction, supporting continued integration post-pandemic."
+    }
+  ]
+}
