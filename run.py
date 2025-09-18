@@ -15,8 +15,8 @@ from utils import *
 def check_ollama_status():
     """Check if Ollama is running and has required models"""
     ollama_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
-    required_models = [
-        os.getenv("OLLAMA_MODEL", "gemma3:1b"),
+    models_to_check = [
+        os.getenv("OLLAMA_MODEL", "llama3.1:8b"),
         os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
     ]
     
@@ -32,7 +32,7 @@ def check_ollama_status():
         print(f"✅ Ollama server running at {ollama_url}")
         
         missing_models = []
-        for model in required_models:
+        for model in models_to_check:
             if any(model in available for available in available_models):
                 print(f"✅ Model {model} available")
             else:
@@ -267,7 +267,7 @@ def main():
         print("  4. python run.py -run_inference      # Run clinical inference")
         print()
         print("Prerequisites:")
-        print("  - Ollama running with gemma3:1b and nomic-embed-text models")
+        print("  - Ollama running with llama3.1:8b and nomic-embed-text models")
         print("  - Docker containers running: docker compose up -d")
         print("  - Environment variables set in .env file")
         print()
