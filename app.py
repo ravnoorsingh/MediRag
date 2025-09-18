@@ -38,6 +38,16 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 clinical_engine = None
 fhir_parser = None
 
+# Initialize system on module load
+try:
+    clinical_engine = create_clinical_decision_engine()
+    fhir_parser = create_fhir_parser()
+    print("✅ Web app clinical decision system initialized")
+except Exception as e:
+    print(f"❌ Failed to initialize web app system: {e}")
+    clinical_engine = None
+    fhir_parser = None
+
 
 def init_system():
     """Initialize the clinical decision system"""

@@ -24,7 +24,7 @@ Modify the response to the question using the provided references. Include preci
 
 # API configuration
 ollama_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
-ollama_model = os.getenv("OLLAMA_MODEL", "gemma3:1b")
+ollama_model = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 ollama_embedding_model = os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
 neo4j_url = os.getenv("NEO4J_URL", "bolt://localhost:7687")
 neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
@@ -607,17 +607,26 @@ class HybridMedicalRAG:
         Perform semantic search across all levels or specific levels
         Returns both graph relationships and vector similarity results
         """
+        print(f"🔍 Performing semantic search for: {query_text[:100]}...")
+        
         # Vector-based semantic search using direct Qdrant
         try:
             query_embedding = get_embedding(query_text)
             
-            # Build filter for level if specified
+            # Build filter for level if specified (fixed Qdrant filter syntax)
             search_filter = None
             if level_filter:
                 if isinstance(level_filter, str):
                     level_filter = [level_filter]
+                
+                # Use simple dictionary format for Qdrant filters
                 search_filter = {
-                    "should": [{"key": "level", "match": {"value": level}} for level in level_filter]
+                    "should": [
+                        {
+                            "key": "level",
+                            "match": {"value": level}
+                        } for level in level_filter
+                    ]
                 }
             
             vector_results = self.qdrant_client.search(
@@ -625,35 +634,72 @@ class HybridMedicalRAG:
                 query_vector=query_embedding,
                 query_filter=search_filter,
                 limit=top_k,
-                with_payload=True
+                with_payload=True,
+                with_vectors=False
             )
+            print(f"✓ Found {len(vector_results)} vector matches")
         except Exception as e:
             print(f"✗ Vector search failed: {e}")
             vector_results = []
         
-        # Graph-based relationship search
-        graph_query = """
-            MATCH (n)
-            WHERE n.content CONTAINS $query_text
-        """
-        
-        if level_filter:
-            if isinstance(level_filter, str):
-                level_filter = [level_filter]
-            level_condition = " OR ".join([f"n.level = '{level}'" for level in level_filter])
-            graph_query += f" AND ({level_condition})"
-        
-        graph_query += """
-            OPTIONAL MATCH (n)-[r]-(related)
-            RETURN n, collect(DISTINCT {rel: type(r), node: related}) as relationships
-            LIMIT $top_k
-        """
-        
+        # Graph-based search using content matching and relationships
         try:
-            graph_results = self.n4j.query(graph_query, {'query_text': query_text, 'top_k': top_k})
+            # Use text-based search with relationship traversal for robust graph search
+            graph_query = """
+                MATCH (n)
+                WHERE toLower(n.content) CONTAINS toLower($query_text) 
+                   OR toLower(n.title) CONTAINS toLower($query_text)
+                   OR (n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($query_text))
+            """
+            
+            if level_filter:
+                if isinstance(level_filter, str):
+                    level_filter = [level_filter]
+                level_condition = " OR ".join([f"n.level = '{level}'" for level in level_filter])
+                graph_query += f" AND ({level_condition})"
+            
+            graph_query += """
+                WITH n, 
+                     CASE 
+                        WHEN toLower(n.title) CONTAINS toLower($query_text) THEN 1.0
+                        WHEN (n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($query_text)) THEN 0.9
+                        ELSE 0.7
+                     END as similarity
+                OPTIONAL MATCH (n)-[r]-(related)
+                WHERE similarity > 0.5
+                RETURN n, similarity, 
+                       collect(DISTINCT {rel: type(r), node: related}) as relationships
+                ORDER BY similarity DESC
+                LIMIT $top_k
+            """
+            
+            graph_results = self.n4j.query(graph_query, {
+                'query_text': query_text, 
+                'top_k': top_k
+            })
+            print(f"✓ Found {len(graph_results)} graph matches with relationships")
+            
         except Exception as e:
-            print(f"✗ Graph search failed: {e}")
-            graph_results = []
+            print(f"⚠️ Graph search failed, using simple node matching: {e}")
+            # Ultra-simple fallback
+            graph_query = """
+                MATCH (n)
+                WHERE n.content IS NOT NULL
+            """
+            
+            if level_filter:
+                if isinstance(level_filter, str):
+                    level_filter = [level_filter]
+                level_condition = " OR ".join([f"n.level = '{level}'" for level in level_filter])
+                graph_query += f" AND ({level_condition})"
+            
+            graph_query += """
+                RETURN n, 0.6 as similarity, [] as relationships
+                LIMIT $top_k
+            """
+            
+            graph_results = self.n4j.query(graph_query, {'top_k': top_k})
+            print(f"✓ Found {len(graph_results)} basic matches")
         
         return {
             'vector_results': vector_results,

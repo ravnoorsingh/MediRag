@@ -279,57 +279,155 @@ class ClinicalDecisionEngine:
         """Use hybrid retrieval to find relevant medical evidence"""
         print("🔍 Retrieving relevant medical evidence...")
         
-        # Construct comprehensive search query
-        search_context = f"""
-        Patient context: {patient_context.demographics.get('age', 'unknown')} year old {patient_context.demographics.get('gender', 'unknown')}
+        # Create comprehensive search context including patient-specific information
+        search_queries = []
+        
+        # Primary query focused on chief complaint and question
+        primary_query = f"""
         Chief complaint: {chief_complaint}
-        Relevant history: {'; '.join(patient_context.relevant_history[:3])}
-        Current medications: {'; '.join(patient_context.current_medications[:3])}
-        
         Clinical question: {clinical_question}
+        Patient age: {patient_context.demographics.get('age', 'unknown')}
+        Patient gender: {patient_context.demographics.get('gender', 'unknown')}
         """
+        search_queries.append(primary_query)
         
-        # Perform semantic search across medical literature
-        search_results = self.hybrid_rag.semantic_search_across_levels(
-            query_text=search_context,
-            level_filter=["MIDDLE", "BOTTOM"],  # Focus on literature and concepts
-            top_k=10
-        )
+        # Secondary queries for specific patient context
+        if patient_context.relevant_history:
+            history_query = f"Medical history: {'; '.join(patient_context.relevant_history[:5])} related to {clinical_question}"
+            search_queries.append(history_query)
+        
+        if patient_context.current_medications:
+            medication_query = f"Medications: {'; '.join(patient_context.current_medications[:5])} drug interactions {clinical_question}"
+            search_queries.append(medication_query)
+        
+        if patient_context.risk_factors:
+            risk_query = f"Risk factors: {'; '.join(patient_context.risk_factors[:3])} clinical management {clinical_question}"
+            search_queries.append(risk_query)
         
         evidence_list = []
         
-        # Process vector search results
-        for result in search_results['vector_results']:
-            payload = result.payload
-            evidence = ClinicalEvidence(
-                source_id=payload.get('node_id', str(uuid.uuid4())),
-                source_type=self._determine_source_type(payload.get('node_type', 'unknown')),
-                title=payload.get('title', 'Unknown source'),
-                excerpt=payload.get('content', '')[:300] + "..." if len(payload.get('content', '')) > 300 else payload.get('content', ''),
-                confidence_score=float(result.score),
-                publication_year=payload.get('year'),
-                authors=payload.get('authors')
+        # Search across different levels with multiple queries
+        for query_text in search_queries:
+            print(f"🔎 Searching with: {query_text[:80]}...")
+            
+            # Search medical literature and concepts (MIDDLE and BOTTOM levels)
+            search_results = self.hybrid_rag.semantic_search_across_levels(
+                query_text=query_text,
+                level_filter=["MIDDLE", "BOTTOM"],  # Focus on literature and medical concepts
+                top_k=8
             )
-            evidence_list.append(evidence)
+            
+            # Process vector search results from Qdrant
+            for result in search_results['vector_results']:
+                if hasattr(result, 'payload'):
+                    payload = result.payload
+                    confidence = float(result.score) if hasattr(result, 'score') else 0.8
+                    
+                    evidence = ClinicalEvidence(
+                        source_id=payload.get('node_id', str(uuid.uuid4())),
+                        source_type=self._determine_source_type(payload.get('node_type', 'unknown')),
+                        title=payload.get('title', payload.get('content', 'Unknown source')[:100]),
+                        excerpt=self._create_evidence_excerpt(payload.get('content', ''), query_text),
+                        confidence_score=confidence,
+                        publication_year=payload.get('year'),
+                        authors=payload.get('authors')
+                    )
+                    evidence_list.append(evidence)
+            
+            # Process graph search results from Neo4j
+            for result in search_results['graph_results']:
+                node_data = result.get('n', {})
+                similarity = result.get('similarity', 0.7)
+                
+                if hasattr(node_data, 'get') or isinstance(node_data, dict):
+                    node_dict = node_data if isinstance(node_data, dict) else dict(node_data)
+                    
+                    evidence = ClinicalEvidence(
+                        source_id=node_dict.get('id', node_dict.get('cui', str(uuid.uuid4()))),
+                        source_type=self._determine_graph_source_type(node_dict),
+                        title=self._extract_node_title(node_dict),
+                        excerpt=self._create_evidence_excerpt(node_dict.get('content', ''), query_text),
+                        confidence_score=float(similarity),
+                        publication_year=node_dict.get('year'),
+                        authors=node_dict.get('authors')
+                    )
+                    evidence_list.append(evidence)
         
-        # Process graph search results
-        for result in search_results['graph_results']:
-            node_data = result.get('n', {})
-            if hasattr(node_data, 'get'):
-                evidence = ClinicalEvidence(
-                    source_id=node_data.get('id', node_data.get('cui', str(uuid.uuid4()))),
-                    source_type='medical_concept',
-                    title=node_data.get('title', node_data.get('content', 'Medical concept')[:50]),
-                    excerpt=node_data.get('content', '')[:300] + "..." if len(node_data.get('content', '')) > 300 else node_data.get('content', ''),
-                    confidence_score=0.8,  # Default high confidence for validated medical concepts
-                )
-                evidence_list.append(evidence)
+        # Remove duplicates and sort by confidence
+        seen_sources = set()
+        unique_evidence = []
+        for evidence in evidence_list:
+            source_key = f"{evidence.source_id}_{evidence.title[:50]}"
+            if source_key not in seen_sources:
+                seen_sources.add(source_key)
+                unique_evidence.append(evidence)
         
-        # Sort by confidence and return top evidence
-        evidence_list.sort(key=lambda x: x.confidence_score, reverse=True)
-        print(f"✅ Retrieved {len(evidence_list)} pieces of medical evidence")
+        unique_evidence.sort(key=lambda x: x.confidence_score, reverse=True)
+        final_evidence = unique_evidence[:15]  # Return top 15 pieces of evidence
         
-        return evidence_list[:15]  # Return top 15 pieces of evidence
+        print(f"✅ Retrieved {len(final_evidence)} unique pieces of medical evidence")
+        return final_evidence
+    
+    def _create_evidence_excerpt(self, content: str, query_context: str) -> str:
+        """Create a relevant excerpt from content based on query context"""
+        if not content:
+            return "No content available"
+        
+        # If content is short, return as is
+        if len(content) <= 300:
+            return content
+        
+        # Try to find relevant sections based on query keywords
+        query_keywords = query_context.lower().split()
+        content_lower = content.lower()
+        
+        # Find best starting position based on keyword matches
+        best_pos = 0
+        max_matches = 0
+        
+        for i in range(0, len(content) - 300, 50):
+            excerpt = content[i:i+300].lower()
+            matches = sum(1 for keyword in query_keywords if keyword in excerpt)
+            if matches > max_matches:
+                max_matches = matches
+                best_pos = i
+        
+        excerpt = content[best_pos:best_pos+300]
+        return excerpt + "..." if best_pos + 300 < len(content) else excerpt
+    
+    def _extract_node_title(self, node_dict: dict) -> str:
+        """Extract a meaningful title from node data"""
+        # Try different title fields
+        for field in ['title', 'name', 'preferred_term', 'content']:
+            if field in node_dict and node_dict[field]:
+                title = str(node_dict[field])[:100]
+                return title if title else "Medical concept"
+        
+        return "Medical concept"
+    
+    def _determine_graph_source_type(self, node_dict: dict) -> str:
+        """Determine source type from Neo4j node data"""
+        # Check node labels if available
+        labels = node_dict.get('labels', [])
+        if isinstance(labels, list):
+            for label in labels:
+                if 'paper' in label.lower() or 'research' in label.lower():
+                    return 'research_paper'
+                elif 'book' in label.lower() or 'textbook' in label.lower():
+                    return 'textbook'
+                elif 'guideline' in label.lower():
+                    return 'clinical_guideline'
+                elif 'concept' in label.lower():
+                    return 'medical_concept'
+        
+        # Fallback to level-based determination
+        level = node_dict.get('level', '')
+        if level == 'MIDDLE':
+            return 'medical_literature'
+        elif level == 'BOTTOM':
+            return 'medical_concept'
+        else:
+            return 'unknown'
     
     def _determine_source_type(self, node_type: str) -> str:
         """Map node types to standardized source types"""
@@ -362,11 +460,24 @@ class ClinicalDecisionEngine:
         Allergies: {'; '.join(patient_context.allergies)}
         """
         
-        # Prepare evidence context
-        evidence_context = "\n".join([
-            f"[{i+1}] {ev.source_type.upper()}: {ev.title} - {ev.excerpt}"
-            for i, ev in enumerate(evidence[:10])  # Top 10 pieces of evidence
-        ])
+        # Prepare evidence context with numbered references
+        evidence_context = ""
+        evidence_index_map = {}
+        
+        for i, ev in enumerate(evidence[:15]):  # Top 15 pieces of evidence
+            evidence_index = i + 1
+            evidence_index_map[evidence_index] = ev
+            
+            # Create detailed evidence entry
+            source_info = f"{ev.source_type.upper()}"
+            if ev.publication_year:
+                source_info += f" ({ev.publication_year})"
+            if ev.authors:
+                source_info += f" by {ev.authors}"
+            
+            evidence_context += f"[{evidence_index}] {source_info}: {ev.title}\n"
+            evidence_context += f"    {ev.excerpt}\n"
+            evidence_context += f"    Confidence: {ev.confidence_score:.2f}\n\n"
         
         # AI prompt for generating care options
         prompt = f"""
@@ -415,8 +526,24 @@ class ClinicalDecisionEngine:
             # Convert to CareOption objects
             care_options = []
             for i, option_data in enumerate(care_options_data):
-                # Assign relevant evidence to each option
-                option_evidence = self._assign_evidence_to_option(evidence, option_data.get('rationale', ''))
+                # Assign relevant evidence to each option based on citations
+                option_evidence = self._assign_evidence_to_option(
+                    evidence_index_map, 
+                    option_data.get('rationale', '')
+                )
+                
+                # Ensure contraindications and monitoring are arrays
+                contraindications = option_data.get('contraindications', [])
+                if isinstance(contraindications, str):
+                    contraindications = [contraindications] if contraindications else []
+                elif not isinstance(contraindications, list):
+                    contraindications = []
+                
+                monitoring = option_data.get('monitoring', [])
+                if isinstance(monitoring, str):
+                    monitoring = [monitoring] if monitoring else []
+                elif not isinstance(monitoring, list):
+                    monitoring = []
                 
                 care_option = CareOption(
                     option_id=str(uuid.uuid4()),
@@ -425,13 +552,13 @@ class ClinicalDecisionEngine:
                     rationale=option_data.get('rationale', ''),
                     confidence=ConfidenceLevel(option_data.get('confidence', 'MEDIUM')),
                     evidence=option_evidence,
-                    contraindications=option_data.get('contraindications', []),
-                    monitoring_requirements=option_data.get('monitoring', []),
+                    contraindications=contraindications,
+                    monitoring_requirements=monitoring,
                     expected_outcomes=option_data.get('outcomes', '')
                 )
                 care_options.append(care_option)
             
-            print(f"✅ Generated {len(care_options)} care options")
+            print(f"✅ Generated {len(care_options)} care options with evidence citations")
             return care_options
             
         except Exception as e:
@@ -491,10 +618,10 @@ class ClinicalDecisionEngine:
     
     def _assign_evidence_to_option(
         self, 
-        evidence_list: List[ClinicalEvidence], 
+        evidence_index_map: dict, 
         rationale: str
     ) -> List[ClinicalEvidence]:
-        """Assign relevant evidence pieces to specific care options"""
+        """Assign relevant evidence pieces to specific care options based on citations"""
         assigned_evidence = []
         
         # Find evidence references in rationale (e.g., [1], [2], [3])
@@ -503,15 +630,18 @@ class ClinicalDecisionEngine:
         
         for citation in citations:
             try:
-                index = int(citation) - 1  # Convert to 0-based index
-                if 0 <= index < len(evidence_list):
-                    assigned_evidence.append(evidence_list[index])
-            except (ValueError, IndexError):
+                index = int(citation)
+                if index in evidence_index_map:
+                    assigned_evidence.append(evidence_index_map[index])
+            except (ValueError, KeyError):
                 continue
         
-        # If no specific citations found, assign top 3 pieces of evidence
+        # If no specific citations found, assign top 3 pieces of evidence from the map
         if not assigned_evidence:
-            assigned_evidence = evidence_list[:3]
+            # Get first 3 evidence pieces from the index map
+            sorted_indices = sorted(evidence_index_map.keys())
+            for i in sorted_indices[:3]:
+                assigned_evidence.append(evidence_index_map[i])
         
         return assigned_evidence
     
