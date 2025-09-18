@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-gastro-case-02",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:51:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-gi-002", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-GI-0002"}], "name": [{"family": "Iverson", "given": ["Dana"], "prefix": ["Ms."]}], "gender": "female", "birthDate": "1993-12-23"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-crohns", "subject": {"reference": "Patient/patient-gi-002"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "34000006", "display": "Crohn's disease"}]}, "onsetDateTime": "2020-02-01", "recordedDate": "2020-02-10", "note": [{"text": "Diet pattern coaching referencing population sodium and dietary counseling recommendations (Quader et al. 2017; behavioral counseling diet/physical activity 2017)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-crp", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "30522-7", "display": "C reactive protein [Mass/volume] in Serum or Plasma"}]}, "subject": {"reference": "Patient/patient-gi-002"}, "effectiveDateTime": "2025-09-11", "valueQuantity": {"value": 11.2, "unit": "mg/L", "system": "http://unitsofmeasure.org", "code": "mg/L"}, "referenceRange": [{"high": {"value": 3.0, "unit": "mg/L"}, "text": "<=3.0 mg/L"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}]} }
+  ]
+}

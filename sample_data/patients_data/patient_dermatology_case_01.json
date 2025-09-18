@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-dermatology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:35:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-derm-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-DERM-0001"}], "name": [{"family": "Chen", "given": ["Ming"]}], "gender": "male", "birthDate": "2005-11-10"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-atopic-dermatitis", "subject": {"reference": "Patient/patient-derm-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "24079001", "display": "Atopic dermatitis"}]}, "onsetDateTime": "2010-05-01", "recordedDate": "2010-06-01", "note": [{"text": "Allergic triggers aligned with pollen exposure patterns similar to respiratory allergy case methodologies."}] }},
+    {"resource": {"resourceType": "AllergyIntolerance", "id": "allergy-dust-mite", "subject": {"reference": "Patient/patient-derm-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active", "display": "Active"}]}, "type": "allergy", "category": ["environment"], "code": {"coding": [{"system": "http://snomed.info/sct", "code": "256259004", "display": "House dust mite"}]}, "reaction": [{"manifestation": [{"coding": [{"system": "http://snomed.info/sct", "code": "271807003", "display": "Skin rash"}]}], "severity": "moderate"}] }}
+  ]
+}

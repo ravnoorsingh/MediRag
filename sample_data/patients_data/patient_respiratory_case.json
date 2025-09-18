@@ -1,0 +1,365 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-respiratory-case",
+  "type": "collection",
+  "timestamp": "2025-09-18T16:30:00Z",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-003",
+        "identifier": [
+          {
+            "system": "http://hospital.example.com/patient-ids",
+            "value": "MRN-11111"
+          }
+        ],
+        "name": [
+          {
+            "family": "Thompson",
+            "given": ["James", "William"],
+            "prefix": ["Mr."]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1975-07-08",
+        "address": [
+          {
+            "line": ["789 Pine Street"],
+            "city": "Boston",
+            "state": "MA",
+            "postalCode": "02108",
+            "country": "US"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-555-456-7890",
+            "use": "mobile"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-asthma",
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "195967001",
+              "display": "Asthma"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "J45.9",
+              "display": "Asthma, unspecified"
+            }
+          ]
+        },
+        "onsetDateTime": "1985-04-20",
+        "recordedDate": "1985-05-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-copd",
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13645005",
+              "display": "Chronic obstructive lung disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "J44.1",
+              "display": "Chronic obstructive pulmonary disease with acute exacerbation"
+            }
+          ]
+        },
+        "onsetDateTime": "2020-09-15",
+        "recordedDate": "2020-09-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-albuterol",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "329498",
+              "display": "Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+            }
+          ],
+          "text": "Albuterol HFA Inhaler"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Inhale 2 puffs every 4-6 hours as needed for shortness of breath",
+            "asNeededBoolean": true,
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Inhalation route"
+                }
+              ]
+            }
+          }
+        ],
+        "authoredOn": "1985-05-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-advair",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "895994",
+              "display": "Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.025 MG/ACTUAT Dry Powder Inhaler"
+            }
+          ],
+          "text": "Advair Diskus 250/50"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Inhale 1 puff twice daily",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ],
+        "authoredOn": "2020-09-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-pollen",
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": ["environment"],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "256277009",
+              "display": "Grass pollen"
+            }
+          ]
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "195967001",
+                    "display": "Asthma"
+                  }
+                ]
+              },
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "24079001",
+                    "display": "Atopic dermatitis"
+                  }
+                ]
+              }
+            ],
+            "severity": "moderate"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-peak-flow",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33452-4",
+              "display": "Peak expiratory flow rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "effectiveDateTime": "2025-09-15",
+        "valueQuantity": {
+          "value": 320,
+          "unit": "L/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "L/min"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 400,
+              "unit": "L/min"
+            },
+            "high": {
+              "value": 600,
+              "unit": "L/min"
+            },
+            "text": "Expected for age/height: 400-600 L/min"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "L",
+                "display": "Low"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-oxygen-sat",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2708-6",
+              "display": "Oxygen saturation in Arterial blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-003"
+        },
+        "effectiveDateTime": "2025-09-15",
+        "valueQuantity": {
+          "value": 94,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 95,
+              "unit": "%"
+            },
+            "text": "Normal: ≥95%"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "L",
+                "display": "Low"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

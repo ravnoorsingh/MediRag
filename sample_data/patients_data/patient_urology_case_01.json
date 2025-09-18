@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-urology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:37:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-uro-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-URO-0001"}], "name": [{"family": "Patel", "given": ["Ravi"]}], "gender": "male", "birthDate": "1988-08-18"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-nephrolithiasis", "subject": {"reference": "Patient/patient-uro-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "95570007", "display": "Kidney stone"}]}, "onsetDateTime": "2025-08-22", "recordedDate": "2025-08-23", "note": [{"text": "Epidemiologic counseling referencing incidence trends (Tasian et al. 2016)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-urine-calcium", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "17861-6", "display": "Calcium [Mass/volume] in Urine"}]}, "subject": {"reference": "Patient/patient-uro-001"}, "effectiveDateTime": "2025-09-12", "valueQuantity": {"value": 380, "unit": "mg/24h", "system": "http://unitsofmeasure.org", "code": "mg/(24.h)"}, "referenceRange": [{"high": {"value": 300}, "text": "<=300 mg/24h"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}]} }
+  ]
+}

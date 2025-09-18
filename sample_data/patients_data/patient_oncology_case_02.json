@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-oncology-case-02",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:45:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-onc-002", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-ONC-0002"}], "name": [{"family": "Fraser", "given": ["Colin"], "prefix": ["Mr."]}], "gender": "male", "birthDate": "1964-11-02"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-nsclc-egfr", "subject": {"reference": "Patient/patient-onc-002"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "254637007", "display": "Adenocarcinoma of lung"}]}, "onsetDateTime": "2024-12-05", "recordedDate": "2024-12-10", "note": [{"text": "EGFR mutation positive; management considerations aligned with consensus optimization statements (Tan et al. 2016)."}] }},
+    {"resource": {"resourceType": "MedicationRequest", "id": "medication-osimertinib", "status": "active", "intent": "order", "subject": {"reference": "Patient/patient-onc-002"}, "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "1872957", "display": "Osimertinib 80 MG Oral Tablet"}], "text": "Osimertinib 80mg"}, "dosageInstruction": [{"text": "Take 80 mg orally once daily", "timing": {"repeat": {"frequency": 1, "period": 1, "periodUnit": "d"}}}], "authoredOn": "2025-01-02"}}
+  ]
+}

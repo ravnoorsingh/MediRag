@@ -1,0 +1,335 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-cardiac-case",
+  "type": "collection",
+  "timestamp": "2025-09-18T14:00:00Z",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-002",
+        "identifier": [
+          {
+            "system": "http://hospital.example.com/patient-ids",
+            "value": "MRN-67890"
+          }
+        ],
+        "name": [
+          {
+            "family": "Martinez",
+            "given": ["Maria", "Elena"],
+            "prefix": ["Mrs."]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1958-11-22",
+        "address": [
+          {
+            "line": ["456 Oak Avenue"],
+            "city": "Chicago",
+            "state": "IL",
+            "postalCode": "60601",
+            "country": "US"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-555-987-6543",
+            "use": "home"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-coronary-artery-disease",
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "53741008",
+              "display": "Coronary artery disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I25.10",
+              "display": "Atherosclerotic heart disease of native coronary artery without angina pectoris"
+            }
+          ]
+        },
+        "onsetDateTime": "2022-05-10",
+        "recordedDate": "2022-05-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-atrial-fibrillation",
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I48.0",
+              "display": "Paroxysmal atrial fibrillation"
+            }
+          ]
+        },
+        "onsetDateTime": "2023-01-15",
+        "recordedDate": "2023-01-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-warfarin",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "855288",
+              "display": "Warfarin Sodium 5 MG Oral Tablet"
+            }
+          ],
+          "text": "Warfarin 5mg"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Take 1 tablet by mouth daily, adjust based on INR",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ],
+        "authoredOn": "2023-01-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-metoprolol",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "866426",
+              "display": "Metoprolol Tartrate 25 MG Oral Tablet"
+            }
+          ],
+          "text": "Metoprolol 25mg"
+        },
+        "dosageInstruction": [
+          {
+            "text": "Take 1 tablet by mouth twice daily",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ],
+        "authoredOn": "2022-05-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-aspirin",
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": ["medication"],
+        "criticality": "high",
+        "code": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1191",
+              "display": "Aspirin"
+            }
+          ]
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "4386001",
+                    "display": "Bronchospasm"
+                  }
+                ]
+              }
+            ],
+            "severity": "severe"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-inr",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34714-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "effectiveDateTime": "2025-09-12",
+        "valueQuantity": {
+          "value": 2.8,
+          "system": "http://unitsofmeasure.org",
+          "code": "1"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 2.0
+            },
+            "high": {
+              "value": 3.0
+            },
+            "text": "Target INR: 2.0-3.0"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-ecg-findings",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "procedure",
+                "display": "Procedure"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11524-6",
+              "display": "EKG study"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-002"
+        },
+        "effectiveDateTime": "2025-09-10",
+        "valueString": "Irregular rhythm consistent with atrial fibrillation. Rate 78 bpm. No acute ST changes.",
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "A",
+                "display": "Abnormal"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

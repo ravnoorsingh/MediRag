@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-gastro-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:36:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-gi-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-GI-0001"}], "name": [{"family": "Roberts", "given": ["Steven"], "prefix": ["Mr."]}], "gender": "male", "birthDate": "1972-02-02"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-nafld", "subject": {"reference": "Patient/patient-gi-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "197321007", "display": "Nonalcoholic fatty liver disease"}]}, "onsetDateTime": "2024-05-10", "recordedDate": "2024-05-15", "note": [{"text": "Dietary counseling referencing protein intake trend analyses (Berryman et al. 2018) and sodium reduction public health data (Quader et al. 2017)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-alt-gi", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "1742-6", "display": "Alanine aminotransferase"}]}, "subject": {"reference": "Patient/patient-gi-001"}, "effectiveDateTime": "2025-09-09", "valueQuantity": {"value": 74, "unit": "U/L", "system": "http://unitsofmeasure.org", "code": "U/L"}, "referenceRange": [{"low": {"value": 7}, "high": {"value": 56}, "text": "Normal 7-56 U/L"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}]} }
+  ]
+}

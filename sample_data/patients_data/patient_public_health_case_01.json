@@ -1,0 +1,14 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-public-health-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:39:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-ph-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-PH-0001"}], "name": [{"family": "Morgan", "given": ["Samuel"]}], "gender": "male", "birthDate": "1969-10-25"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-masked-hypertension", "subject": {"reference": "Patient/patient-ph-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "763137002", "display": "Masked hypertension"}]}, "onsetDateTime": "2025-03-18", "recordedDate": "2025-03-20", "note": [{"text": "Out-of-office BP strategy informed by masked hypertension incident clinic hypertension risk (Abdalla et al. 2016) and disparities in antihypertensive medication adherence (Ritchey et al. 2016)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-ambulatory-bp", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "vital-signs", "display": "Vital Signs"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "96764-4", "display": "Blood pressure systolic & diastolic panel--24 hour Ambulatory"}]}, "subject": {"reference": "Patient/patient-ph-001"}, "effectiveDateTime": "2025-09-12", "component": [
+        {"code": {"coding": [{"system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure"}]}, "valueQuantity": {"value": 138, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]"}},
+        {"code": {"coding": [{"system": "http://loinc.org", "code": "8462-4", "display": "Diastolic blood pressure"}]}, "valueQuantity": {"value": 86, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]"}}
+      ], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "A", "display": "Abnormal"}]}] } }
+  ]
+}

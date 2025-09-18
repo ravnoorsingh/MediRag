@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-rheumatology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:34:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-rheum-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-RHEUM-0001"}], "name": [{"family": "Khan", "given": ["Aisha"]}], "gender": "female", "birthDate": "1979-03-03"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-ra", "subject": {"reference": "Patient/patient-rheum-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "69896004", "display": "Rheumatoid arthritis"}, {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "M06.9", "display": "Rheumatoid arthritis, unspecified"}]}, "onsetDateTime": "2021-01-14", "recordedDate": "2021-01-20", "note": [{"text": "Weight management counseling referencing cancer risk modification via weight loss (Schauer et al. 2017) informing lifestyle plan."}] }},
+    {"resource": {"resourceType": "MedicationRequest", "id": "medication-methotrexate", "status": "active", "intent": "order", "subject": {"reference": "Patient/patient-rheum-001"}, "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "72962", "display": "Methotrexate 2.5 MG Oral Tablet"}], "text": "Methotrexate 15mg weekly"}, "dosageInstruction": [{"text": "Take 6 tablets (15 mg) orally once weekly", "timing": {"repeat": {"frequency": 1, "period": 1, "periodUnit": "wk"}}}], "authoredOn": "2025-04-01"}}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-pediatrics-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:32:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-ped-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-PED-0001"}], "name": [{"family": "Harris", "given": ["Noah"]}], "gender": "male", "birthDate": "2018-07-14"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-pediatric-obesity-risk", "subject": {"reference": "Patient/patient-ped-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "268916007", "display": "At risk of obesity"}]}, "onsetDateTime": "2025-06-01", "recordedDate": "2025-06-05", "note": [{"text": "Growth pattern monitoring referencing infant BMI predictive concepts (Roy et al. 2016)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-bmi-percentile", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "vital-signs", "display": "Vital Signs"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "59576-9", "display": "Body mass index (BMI) [Percentile] Per age and sex"}]}, "subject": {"reference": "Patient/patient-ped-001"}, "effectiveDateTime": "2025-09-05", "valueQuantity": {"value": 92, "unit": "%", "system": "http://unitsofmeasure.org", "code": "%"}, "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}], "referenceRange": [{"low": {"value": 5}, "high": {"value": 85}, "text": "Healthy weight percentile 5-85"}] } }
+  ]
+}

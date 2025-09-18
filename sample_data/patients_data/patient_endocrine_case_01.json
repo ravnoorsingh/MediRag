@@ -1,0 +1,12 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-endocrine-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:15:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-endo-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-ENDO-0001"}], "name": [{"family": "Singh", "given": ["Priya"], "prefix": ["Dr."]}], "gender": "female", "birthDate": "1990-12-02"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-thyroid-cancer", "subject": {"reference": "Patient/patient-endo-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "255081006", "display": "Papillary thyroid carcinoma"}, {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "C73", "display": "Malignant neoplasm of thyroid gland"}]}, "onsetDateTime": "2024-04-14", "recordedDate": "2024-04-20", "note": [{"text": "Molecular profiling referencing IGF1R signaling activation patterns (Panebianco et al. 2017)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-tsh", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "3016-3", "display": "Thyrotropin [Units/volume] in Serum or Plasma"}]}, "subject": {"reference": "Patient/patient-endo-001"}, "effectiveDateTime": "2025-09-10", "valueQuantity": {"value": 0.08, "unit": "uIU/mL", "system": "http://unitsofmeasure.org", "code": "u[IU]/mL"}, "referenceRange": [{"low": {"value": 0.4}, "high": {"value": 4.5}, "text": "Normal 0.4-4.5"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "L", "display": "Low"}]}]} },
+    {"resource": {"resourceType": "MedicationRequest", "id": "medication-levothyroxine", "status": "active", "intent": "order", "subject": {"reference": "Patient/patient-endo-001"}, "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "966247", "display": "Levothyroxine Sodium 150 MCG Oral Tablet"}], "text": "Levothyroxine 150mcg"}, "dosageInstruction": [{"text": "Take 150 mcg orally every morning on empty stomach", "timing": {"repeat": {"frequency": 1, "period": 1, "periodUnit": "d"}}}], "authoredOn": "2025-05-01"}}
+  ]
+}

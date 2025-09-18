@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-sleep-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:38:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-sleep-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-SLEEP-0001"}], "name": [{"family": "Young", "given": ["Ethan"]}], "gender": "male", "birthDate": "2010-01-05"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-short-sleep-duration", "subject": {"reference": "Patient/patient-sleep-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "301345002", "display": "Behaviorally induced insufficient sleep syndrome"}]}, "onsetDateTime": "2025-02-01", "recordedDate": "2025-02-10", "note": [{"text": "Sleep duration counseling referencing pediatric sleep recommendations (Paruthi et al. 2016) and adolescent insufficient sleep surveillance (Wheaton et al. 2018)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-sleep-hours", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "survey", "display": "Survey"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "93832-4", "display": "Sleep duration reported"}]}, "subject": {"reference": "Patient/patient-sleep-001"}, "effectiveDateTime": "2025-09-10", "valueQuantity": {"value": 6.0, "unit": "h", "system": "http://unitsofmeasure.org", "code": "h"}, "referenceRange": [{"low": {"value": 8.0}, "high": {"value": 10.0}, "text": "Recommended 8-10 h"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "L", "display": "Low"}]}]} }
+  ]
+}

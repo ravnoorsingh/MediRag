@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-public-health-case-02",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:50:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-ph-002", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-PH-0002"}], "name": [{"family": "Stone", "given": ["Harriet"], "prefix": ["Ms."]}], "gender": "female", "birthDate": "1976-01-07"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-obesity", "subject": {"reference": "Patient/patient-ph-002"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "414916001", "display": "Obesity"}]}, "onsetDateTime": "2018-09-05", "recordedDate": "2018-09-10", "note": [{"text": "Cancer prevention counseling referencing population cancer incidence trends (Siegel et al. 2018) and alcohol guideline risk messaging (Rosenberg et al. 2018)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-bmi", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "vital-signs", "display": "Vital Signs"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "39156-5", "display": "Body mass index (BMI) [Ratio]"}]}, "subject": {"reference": "Patient/patient-ph-002"}, "effectiveDateTime": "2025-09-08", "valueQuantity": {"value": 34.7, "unit": "kg/m2", "system": "http://unitsofmeasure.org", "code": "kg/m2"}, "referenceRange": [{"text": "Normal 18.5-24.9"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}]} }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-psychiatry-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:31:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-psych-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-PSY-0001"}], "name": [{"family": "Lopez", "given": ["Carla"], "prefix": ["Mrs."]}], "gender": "female", "birthDate": "1987-01-22"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-major-depression", "subject": {"reference": "Patient/patient-psych-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "370143000", "display": "Major depression single episode, moderate"}, {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "F32.1", "display": "Major depressive disorder, single episode, moderate"}]}, "onsetDateTime": "2025-03-01", "recordedDate": "2025-03-05", "note": [{"text": "Medication change considerations mindful of switching/stopping antidepressants (2016 review) and cardiovascular risk post-MI (Scherrer et al. 2012)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-phq9", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "survey", "display": "Survey"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "44249-1", "display": "Patient Health Questionnaire 9 item (PHQ-9) total score"}]}, "subject": {"reference": "Patient/patient-psych-001"}, "effectiveDateTime": "2025-09-10", "valueQuantity": {"value": 15, "system": "http://unitsofmeasure.org", "code": "1"}, "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "A", "display": "Abnormal"}]}], "referenceRange": [{"text": "0-4 minimal, 5-9 mild, 10-14 moderate, 15-19 moderately severe, 20-27 severe"}] } }
+  ]
+}

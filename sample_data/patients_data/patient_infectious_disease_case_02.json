@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-infectious-disease-case-02",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:48:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-id-002", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-ID-0002"}], "name": [{"family": "Kowalski", "given": ["Jan"]}], "gender": "male", "birthDate": "1983-09-09"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-influenza-a", "subject": {"reference": "Patient/patient-id-002"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "6142004", "display": "Influenza due to Influenza A virus"}]}, "onsetDateTime": "2025-01-14", "recordedDate": "2025-01-15", "note": [{"text": "Vaccination discussion referencing early season co-circulation and VE interim estimates (Skowronski et al. 2018)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-influenza-rapid", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "80382-5", "display": "Influenza virus A RNA [Presence] in Upper respiratory specimen by NAA with probe detection"}]}, "subject": {"reference": "Patient/patient-id-002"}, "effectiveDateTime": "2025-01-15", "valueString": "Detected", "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "+", "display": "Positive"}]}]} }
+  ]
+}

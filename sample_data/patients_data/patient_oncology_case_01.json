@@ -1,0 +1,60 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-oncology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:00:00Z",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-onc-001",
+        "identifier": [
+          { "system": "http://hospital.example.com/patient-ids", "value": "MRN-ONC-0001" }
+        ],
+        "name": [ { "family": "Anderson", "given": ["Lydia"], "prefix": ["Ms."] } ],
+        "gender": "female",
+        "birthDate": "1982-04-11",
+        "address": [ { "line": ["12 River Way"], "city": "Seattle", "state": "WA", "postalCode": "98101", "country": "US" } ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-metastatic-breast-ca",
+        "subject": { "reference": "Patient/patient-onc-001" },
+        "clinicalStatus": { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active" } ] },
+        "verificationStatus": { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status", "code": "confirmed", "display": "Confirmed" } ] },
+        "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "254837009", "display": "Metastatic malignant neoplasm to liver" }, { "system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "C50.912", "display": "Malignant neoplasm of unspecified site of left female breast" } ] },
+        "onsetDateTime": "2024-07-10",
+        "recordedDate": "2024-07-15",
+        "note": [ { "text": "Patient enrolled in precision oncology protocol referencing biomarkers similar to those discussed in Panebianco et al. 2017 (THADA fusion context)." } ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-palbociclib",
+        "status": "active",
+        "intent": "order",
+        "subject": { "reference": "Patient/patient-onc-001" },
+        "medicationCodeableConcept": { "coding": [ { "system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "1597876", "display": "Palbociclib 125 MG Oral Capsule" } ], "text": "Palbociclib 125mg" },
+        "dosageInstruction": [ { "text": "Take 125 mg orally once daily for 21 days, then 7 days off", "timing": { "repeat": { "frequency": 1, "period": 1, "periodUnit": "d" } } } ],
+        "authoredOn": "2025-08-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-lfts",
+        "status": "final",
+        "category": [ { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory" } ] } ],
+        "code": { "coding": [ { "system": "http://loinc.org", "code": "1742-6", "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma" } ] },
+        "subject": { "reference": "Patient/patient-onc-001" },
+        "effectiveDateTime": "2025-09-10",
+        "valueQuantity": { "value": 86, "unit": "U/L", "system": "http://unitsofmeasure.org", "code": "U/L" },
+        "referenceRange": [ { "low": { "value": 7, "unit": "U/L" }, "high": { "value": 56, "unit": "U/L" }, "text": "Normal: 7-56 U/L" } ],
+        "interpretation": [ { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High" } ] } ]
+      }
+    }
+  ]
+}

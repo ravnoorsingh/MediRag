@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-neurology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:30:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-neuro-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-NEURO-0001"}], "name": [{"family": "Baker", "given": ["Elaine"], "prefix": ["Ms."]}], "gender": "female", "birthDate": "1995-05-09"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-multiple-sclerosis", "subject": {"reference": "Patient/patient-neuro-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "24700007", "display": "Multiple sclerosis"}, {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "G35", "display": "Multiple sclerosis"}]}, "onsetDateTime": "2022-10-11", "recordedDate": "2022-10-20", "note": [{"text": "Cognitive tracking due to concern for subjective decline similar epidemiologic perspectives in Taylor et al. 2018 (subjective cognitive decline)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-mri-brain", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "imaging", "display": "Imaging"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "18745-2", "display": "Brain MRI"}]}, "subject": {"reference": "Patient/patient-neuro-001"}, "effectiveDateTime": "2025-09-01", "valueString": "Multiple new T2/FLAIR hyperintense lesions in periventricular distribution; no enhancing lesions.", "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "A", "display": "Abnormal"}]}]} }
+  ]
+}

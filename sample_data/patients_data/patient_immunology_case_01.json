@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-immunology-case-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:52:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-immun-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-IMMUN-0001"}], "name": [{"family": "Zhao", "given": ["Li"]}], "gender": "female", "birthDate": "1980-10-03"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-hiv-infection", "subject": {"reference": "Patient/patient-immun-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "86406008", "display": "Human immunodeficiency virus infection"}]}, "onsetDateTime": "2018-04-20", "recordedDate": "2018-04-25", "note": [{"text": "Long-term comorbidity prevention counseling referencing extended impact perspectives (Schwetz and Fauci 2019)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-cd4-count", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "8122-4", "display": "CD3+CD4+ (T4 helper) cells [#/volume] in Blood"}]}, "subject": {"reference": "Patient/patient-immun-001"}, "effectiveDateTime": "2025-09-07", "valueQuantity": {"value": 540, "unit": "cells/uL", "system": "http://unitsofmeasure.org", "code": "10*3/uL"}, "referenceRange": [{"low": {"value": 500}, "high": {"value": 1500}, "text": "Reference 500-1500 cells/uL"}] }}
+  ]
+}

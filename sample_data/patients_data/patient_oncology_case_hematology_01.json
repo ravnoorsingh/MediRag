@@ -1,0 +1,11 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-oncology-case-hematology-01",
+  "type": "collection",
+  "timestamp": "2025-09-19T12:47:00Z",
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "patient-heme-001", "identifier": [{"system": "http://hospital.example.com/patient-ids", "value": "MRN-HEME-0001"}], "name": [{"family": "Jenkins", "given": ["Olivia"]}], "gender": "female", "birthDate": "1959-08-17"}},
+    {"resource": {"resourceType": "Condition", "id": "condition-multiple-myeloma", "subject": {"reference": "Patient/patient-heme-001"}, "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active", "display": "Active"}]}, "code": {"coding": [{"system": "http://snomed.info/sct", "code": "109989006", "display": "Multiple myeloma"}]}, "onsetDateTime": "2023-05-01", "recordedDate": "2023-05-05", "note": [{"text": "Therapeutic antibody planning referencing CD38 targeting landscape (van de Donk et al. 2016)."}] }},
+    {"resource": {"resourceType": "Observation", "id": "observation-m-protein", "status": "final", "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory"}]}], "code": {"coding": [{"system": "http://loinc.org", "code": "33358-3", "display": "Monoclonal protein [Mass/volume] in Serum"}]}, "subject": {"reference": "Patient/patient-heme-001"}, "effectiveDateTime": "2025-09-06", "valueQuantity": {"value": 2.3, "unit": "g/dL", "system": "http://unitsofmeasure.org", "code": "g/dL"}, "referenceRange": [{"low": {"value": 0.0}, "high": {"value": 0.0}, "text": "Absent"}], "interpretation": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "H", "display": "High"}]}]} }
+  ]
+}
