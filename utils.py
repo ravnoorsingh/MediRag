@@ -602,24 +602,33 @@ class HybridMedicalRAG:
         except Exception as e:
             print(f"✗ Failed to add {node_id} to Qdrant: {e}")
         
-    def semantic_search_across_levels(self, query_text, level_filter=None, top_k=5):
+    def semantic_search_across_levels(self, query_text, level_filter=None, top_k=15):
         """
-        Perform semantic search across all levels or specific levels
+        Perform enhanced semantic search across all levels
         Returns both graph relationships and vector similarity results
         """
         print(f"🔍 Performing semantic search for: {query_text[:100]}...")
         
+        # Debug: Check what's in the database (only on first search to avoid spam)
+        if not hasattr(self, '_debug_done'):
+            self.debug_database_contents()
+            self._debug_done = True
+        
         # Vector-based semantic search using direct Qdrant
+        vector_results = []
         try:
-            query_embedding = get_embedding(query_text)
-            
-            # Build filter for level if specified (fixed Qdrant filter syntax)
+            # Use only the clinical question part for embedding if possible
+            if '\nClinical question:' in query_text:
+                query_for_embedding = query_text.split('\nClinical question:')[1].strip()
+            else:
+                query_for_embedding = query_text.strip()
+            query_embedding = get_embedding(query_for_embedding)
+
+            # Build filter for level if specified
             search_filter = None
             if level_filter:
                 if isinstance(level_filter, str):
                     level_filter = [level_filter]
-                
-                # Use simple dictionary format for Qdrant filters
                 search_filter = {
                     "should": [
                         {
@@ -628,78 +637,120 @@ class HybridMedicalRAG:
                         } for level in level_filter
                     ]
                 }
-            
+
+            # Raise score threshold for more relevant results
             vector_results = self.qdrant_client.search(
                 collection_name=qdrant_collection,
                 query_vector=query_embedding,
                 query_filter=search_filter,
-                limit=top_k,
+                limit=top_k * 2,  # Get more results for better selection
                 with_payload=True,
-                with_vectors=False
+                with_vectors=False,
+                score_threshold=0.55  # Higher threshold for more relevant results
             )
             print(f"✓ Found {len(vector_results)} vector matches")
+            for i, result in enumerate(vector_results, 1):
+                title = result.payload.get('title', 'No title') if hasattr(result, 'payload') else 'No title'
+                score = getattr(result, 'score', None)
+                print(f"   {i}. Score: {score:.3f} | Title: {title[:60]}")
         except Exception as e:
             print(f"✗ Vector search failed: {e}")
             vector_results = []
         
-        # Graph-based search using content matching and relationships
+        # Enhanced graph-based search using multiple strategies
+        graph_results = []
         try:
-            # Use text-based search with relationship traversal for robust graph search
-            graph_query = """
+            # Extract key search terms
+            search_terms = [term.strip() for term in query_text.lower().split() if len(term.strip()) > 2][:8]
+            
+            # Strategy 1: Direct content search
+            content_search = """
                 MATCH (n)
-                WHERE toLower(n.content) CONTAINS toLower($query_text) 
-                   OR toLower(n.title) CONTAINS toLower($query_text)
-                   OR (n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($query_text))
+                WHERE n.content IS NOT NULL 
+                AND (
+                    any(term in $search_terms WHERE toLower(n.content) CONTAINS term)
+                    OR toLower(n.content) CONTAINS toLower($query_text)
+                )
+                RETURN n, 0.9 as similarity, labels(n) as node_labels, n.data_type as data_type
+                LIMIT $limit
             """
             
-            if level_filter:
-                if isinstance(level_filter, str):
-                    level_filter = [level_filter]
-                level_condition = " OR ".join([f"n.level = '{level}'" for level in level_filter])
-                graph_query += f" AND ({level_condition})"
-            
-            graph_query += """
-                WITH n, 
-                     CASE 
-                        WHEN toLower(n.title) CONTAINS toLower($query_text) THEN 1.0
-                        WHEN (n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($query_text)) THEN 0.9
-                        ELSE 0.7
-                     END as similarity
-                OPTIONAL MATCH (n)-[r]-(related)
-                WHERE similarity > 0.5
-                RETURN n, similarity, 
-                       collect(DISTINCT {rel: type(r), node: related}) as relationships
-                ORDER BY similarity DESC
-                LIMIT $top_k
+            # Strategy 2: Medical dictionary search
+            dict_search = """
+                MATCH (n)
+                WHERE (n.definition IS NOT NULL AND (
+                    any(term in $search_terms WHERE toLower(n.definition) CONTAINS term)
+                    OR toLower(n.definition) CONTAINS toLower($query_text)
+                ))
+                OR (n.term IS NOT NULL AND (
+                    any(term in $search_terms WHERE toLower(n.term) CONTAINS term)
+                    OR toLower(n.term) CONTAINS toLower($query_text)
+                ))
+                RETURN n, 0.8 as similarity, labels(n) as node_labels, n.data_type as data_type
+                LIMIT $limit
             """
             
-            graph_results = self.n4j.query(graph_query, {
-                'query_text': query_text, 
-                'top_k': top_k
-            })
+            # Strategy 3: Title/name search
+            title_search = """
+                MATCH (n)
+                WHERE (n.title IS NOT NULL AND (
+                    any(term in $search_terms WHERE toLower(n.title) CONTAINS term)
+                    OR toLower(n.title) CONTAINS toLower($query_text)
+                ))
+                OR (n.name IS NOT NULL AND (
+                    any(term in $search_terms WHERE toLower(n.name) CONTAINS term)
+                    OR toLower(n.name) CONTAINS toLower($query_text)
+                ))
+                RETURN n, 0.7 as similarity, labels(n) as node_labels, n.data_type as data_type
+                LIMIT $limit
+            """
+            
+            # Execute all search strategies
+            search_params = {
+                'query_text': query_text,
+                'search_terms': search_terms,
+                'limit': top_k
+            }
+            
+            all_results = []
+            for search_query in [content_search, dict_search, title_search]:
+                try:
+                    results = self.n4j.query(search_query, search_params)
+                    all_results.extend(results)
+                except Exception as e:
+                    print(f"   ⚠️ Search strategy failed: {e}")
+            
+            # Remove duplicates based on node ID
+            seen_ids = set()
+            unique_results = []
+            for result in all_results:
+                node = result.get('n', {})
+                node_id = node.get('id', str(node))
+                if node_id not in seen_ids:
+                    seen_ids.add(node_id)
+                    unique_results.append(result)
+            
+            # Sort by similarity and take top results
+            unique_results.sort(key=lambda x: x.get('similarity', 0), reverse=True)
+            graph_results = unique_results[:top_k]
+            
             print(f"✓ Found {len(graph_results)} graph matches with relationships")
             
+            # If still no results, try basic fallback
+            if not graph_results:
+                print("   🔄 Trying basic fallback search...")
+                fallback_query = """
+                    MATCH (n)
+                    WHERE n.content IS NOT NULL OR n.definition IS NOT NULL OR n.title IS NOT NULL
+                    RETURN n, 0.5 as similarity, labels(n) as node_labels, n.data_type as data_type
+                    LIMIT $limit
+                """
+                graph_results = self.n4j.query(fallback_query, {'limit': top_k})
+                print(f"   ✓ Fallback found {len(graph_results)} nodes")
+                
         except Exception as e:
-            print(f"⚠️ Graph search failed, using simple node matching: {e}")
-            # Ultra-simple fallback
-            graph_query = """
-                MATCH (n)
-                WHERE n.content IS NOT NULL
-            """
-            
-            if level_filter:
-                if isinstance(level_filter, str):
-                    level_filter = [level_filter]
-                level_condition = " OR ".join([f"n.level = '{level}'" for level in level_filter])
-                graph_query += f" AND ({level_condition})"
-            
-            graph_query += """
-                RETURN n, 0.6 as similarity, [] as relationships
-                LIMIT $top_k
-            """
-            
-            graph_results = self.n4j.query(graph_query, {'top_k': top_k})
-            print(f"✓ Found {len(graph_results)} basic matches")
+            print(f"⚠️ Graph search failed completely: {e}")
+            graph_results = []
         
         return {
             'vector_results': vector_results,
@@ -735,6 +786,136 @@ class HybridMedicalRAG:
         """
         
         return self.n4j.query(query)
+    
+    def debug_database_contents(self):
+        """Enhanced debug method to check database contents"""
+        try:
+            print("\n🔍 DATABASE CONTENTS DEBUG:")
+            print("=" * 60)
+            
+            # Check Neo4j content with better queries
+            print("\n📊 NEO4J DATABASE ANALYSIS:")
+            
+            # Count all nodes
+            count_query = "MATCH (n) RETURN count(n) as total_nodes"
+            total_result = self.n4j.query(count_query)
+            total_nodes = total_result[0]['total_nodes'] if total_result else 0
+            print(f"   Total nodes: {total_nodes}")
+            
+            # Count by labels
+            label_query = """
+                MATCH (n)
+                WITH labels(n) as node_labels
+                UNWIND node_labels as label
+                RETURN label, count(*) as count
+                ORDER BY count DESC
+            """
+            label_results = self.n4j.query(label_query)
+            print("   Nodes by label:")
+            for result in label_results[:10]:  # Top 10 labels
+                print(f"     - {result['label']}: {result['count']}")
+            
+            # Count by levels/data_type
+            level_query = """
+                MATCH (n)
+                WHERE n.level IS NOT NULL OR n.data_type IS NOT NULL
+                RETURN coalesce(n.level, n.data_type, 'unknown') as category, count(*) as count
+                ORDER BY count DESC
+            """
+            level_results = self.n4j.query(level_query)
+            print("   Nodes by level/data_type:")
+            for result in level_results[:10]:
+                print(f"     - {result['category']}: {result['count']}")
+            
+            # Enhanced content analysis for different data types
+            print("\n   Content type analysis:")
+            content_types = [
+                ("Medical Dictionary Terms", "n.definition IS NOT NULL AND n.term IS NOT NULL"),
+                ("Real Medical Papers", "n.content IS NOT NULL AND n.data_type = 'real_medical_paper'"),
+                ("Research Papers (Legacy)", "n.content IS NOT NULL AND n.data_type = 'research_paper'"),
+                ("Medical Concepts", "n.concept IS NOT NULL"),
+                ("Patients", "n.name IS NOT NULL AND n.data_type = 'patient'"),
+                ("Any Content", "n.content IS NOT NULL OR n.definition IS NOT NULL OR n.title IS NOT NULL")
+            ]
+            
+            for category, condition in content_types:
+                try:
+                    query = f"MATCH (n) WHERE {condition} RETURN count(n) as count"
+                    result = self.n4j.query(query)
+                    count = result[0]['count'] if result else 0
+                    print(f"     - {category}: {count}")
+                except Exception as e:
+                    print(f"     - {category}: Error ({e})")
+            
+            # Sample actual content with better categorization
+            sample_query = """
+                MATCH (n)
+                WHERE n.content IS NOT NULL OR n.title IS NOT NULL OR n.definition IS NOT NULL OR n.term IS NOT NULL
+                RETURN 
+                    coalesce(n.title, n.term, n.name, 'Untitled') as title,
+                    coalesce(n.content, n.definition, 'No content') as content,
+                    labels(n) as labels, 
+                    n.data_type as data_type,
+                    n.level as level
+                LIMIT 8
+            """
+            sample_results = self.n4j.query(sample_query)
+            print("\n   Sample content from database:")
+            for i, result in enumerate(sample_results, 1):
+                title = (result.get('title') or 'No title')[:60]
+                content = (result.get('content') or 'No content')[:120]
+                labels = ', '.join(result.get('labels', []))
+                data_type = result.get('data_type', 'Unknown')
+                level = result.get('level', 'No level')
+                print(f"     {i}. Type: {data_type} | Level: {level}")
+                print(f"        Title: {title}")
+                print(f"        Labels: {labels}")
+                print(f"        Content: {content}...")
+                print()
+            
+            # Check for searchable content
+            searchable_query = """
+                MATCH (n)
+                WHERE (n.content IS NOT NULL AND length(n.content) > 10)
+                   OR (n.definition IS NOT NULL AND length(n.definition) > 10)
+                   OR (n.title IS NOT NULL AND length(n.title) > 3)
+                RETURN count(n) as searchable_count
+            """
+            searchable_result = self.n4j.query(searchable_query)
+            searchable_count = searchable_result[0]['searchable_count'] if searchable_result else 0
+            print(f"   Nodes with searchable content: {searchable_count}")
+            
+            # Check Qdrant content
+            print("\n🔍 QDRANT DATABASE ANALYSIS:")
+            try:
+                collection_info = self.qdrant_client.get_collection(qdrant_collection)
+                vectors_count = collection_info.vectors_count
+                print(f"   Total vectors: {vectors_count}")
+                
+                if vectors_count > 0:
+                    # Sample some vector payloads
+                    sample_vectors = self.qdrant_client.scroll(
+                        collection_name=qdrant_collection,
+                        limit=8,
+                        with_payload=True,
+                        with_vectors=False
+                    )
+                    print("   Sample vector payloads:")
+                    for i, point in enumerate(sample_vectors[0], 1):
+                        payload = point.payload
+                        title = (payload.get('title') or payload.get('content') or 'No title')[:60]
+                        level = payload.get('level', payload.get('data_type', 'Unknown'))
+                        content_preview = (payload.get('content') or payload.get('definition') or '')[:80]
+                        print(f"     {i}. [{level}] {title}")
+                        if content_preview:
+                            print(f"        Content: {content_preview}...")
+            except Exception as e:
+                print(f"   ⚠️ Could not access Qdrant: {e}")
+            
+            print("=" * 60)
+            
+        except Exception as e:
+            print(f"⚠️ Database debug failed: {e}")
     
     def add_to_qdrant(self, embedding, payload, point_id=None):
         """Add a point to Qdrant vector database"""

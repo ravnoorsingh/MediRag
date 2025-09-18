@@ -24,14 +24,37 @@
           "level": "Level B",
           "recommendation": "SGLT2 inhibitors are reasonable for patients with HFrEF to reduce cardiovascular death and heart failure hospitalization",
           "evidence_summary": "Recent trials show benefit regardless of diabetes status"
+        },
+        {
+          "class": "Class I",
+          "level": "Level B-R",
+          "recommendation": "ARNIs are recommended as a replacement for ACE inhibitors or ARBs in ambulatory patients with HFrEF who remain symptomatic despite optimal therapy",
+          "evidence_summary": "PARADIGM-HF trial demonstrated 20% reduction in cardiovascular mortality compared to enalapril"
+        },
+        {
+          "class": "Class I",
+          "level": "Level B-R",
+          "recommendation": "Mineralocorticoid receptor antagonists are recommended for patients with HFrEF and NYHA class II-IV symptoms to reduce mortality and hospitalization",
+          "evidence_summary": "RALES and EMPHASIS-HF trials demonstrated significant mortality benefit"
         }
       ],
       "diagnostic_criteria": {
         "hfref": "Left ventricular ejection fraction ≤40%",
         "hfmref": "Left ventricular ejection fraction 41-49%",
-        "hfpef": "Left ventricular ejection fraction ≥50%"
+        "hfpef": "Left ventricular ejection fraction ≥50%",
+        "nyha_classification": {
+          "I": "No limitation of physical activity",
+          "II": "Slight limitation of physical activity",
+          "III": "Marked limitation of physical activity",
+          "IV": "Symptoms at rest"
+        }
       },
-      "treatment_algorithm": "Guideline-directed medical therapy should be initiated and optimized before considering device therapy or advanced heart failure treatments"
+      "treatment_algorithm": "Guideline-directed medical therapy should be initiated and optimized before considering device therapy or advanced heart failure treatments",
+      "special_populations": {
+        "advanced_renal_disease": "Consider dose adjustments for renally cleared medications; monitor electrolytes closely",
+        "advanced_liver_disease": "Avoid certain medications that may exacerbate hepatic impairment",
+        "elderly": "Initiate therapies at lower doses and titrate more slowly; consider comorbidities and polypharmacy"
+      }
     },
     {
       "guideline_title": "American Diabetes Association Standards of Medical Care in Diabetes - 2023",
@@ -57,13 +80,31 @@
           "level": "Grade B",
           "recommendation": "Consider GLP-1 receptor agonists or SGLT2 inhibitors for patients with established cardiovascular disease",
           "evidence_summary": "Cardiovascular outcome trials demonstrate reduced MACE"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Grade A",
+          "recommendation": "Blood pressure target <130/80 mmHg for most adults with diabetes",
+          "evidence_summary": "ACCORD and SPRINT trials demonstrate reduced cardiovascular events"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Grade A",
+          "recommendation": "Statin therapy for all patients with diabetes and cardiovascular risk factors",
+          "evidence_summary": "Multiple trials show significant reduction in ASCVD events"
         }
       ],
       "diagnostic_criteria": {
         "diabetes": "HbA1c ≥6.5% or fasting glucose ≥126 mg/dL or 2-hour glucose ≥200 mg/dL",
-        "prediabetes": "HbA1c 5.7-6.4% or fasting glucose 100-125 mg/dL"
+        "prediabetes": "HbA1c 5.7-6.4% or fasting glucose 100-125 mg/dL",
+        "gestational_diabetes": "One or more values meeting or exceeding fasting 92 mg/dL, 1-hour 180 mg/dL, or 2-hour 153 mg/dL"
       },
-      "screening_recommendations": "Screen all adults ≥35 years for diabetes/prediabetes every 3 years"
+      "screening_recommendations": "Screen all adults ≥35 years for diabetes/prediabetes every 3 years",
+      "complication_monitoring": {
+        "retinopathy": "Annual dilated eye exam",
+        "nephropathy": "Annual urine albumin-to-creatinine ratio and estimated GFR",
+        "neuropathy": "Annual comprehensive foot exam"
+      }
     },
     {
       "guideline_title": "ACC/AHA Guideline on the Primary Prevention of Cardiovascular Disease",
@@ -89,10 +130,627 @@
           "level": "Level B-R",
           "recommendation": "Consider coronary artery calcium scoring for risk assessment in intermediate-risk patients",
           "evidence_summary": "Improves risk stratification and treatment decisions"
+        },
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Aspirin therapy (75-100 mg daily) may be considered for primary prevention in selected adults 40-70 years at higher ASCVD risk but not at increased bleeding risk",
+          "evidence_summary": "ARRIVE, ASCEND, and ASPREE trials show selective benefit in specific populations"
+        },
+        {
+          "class": "Class III",
+          "level": "Level A",
+          "recommendation": "Routine aspirin therapy is not recommended for primary prevention in adults >70 years or those at increased bleeding risk",
+          "evidence_summary": "Increased major bleeding without net cardiovascular benefit"
         }
       ],
       "risk_assessment": "Use Pooled Cohort Equations to estimate 10-year ASCVD risk",
-      "treatment_thresholds": "Consider statin therapy when 10-year ASCVD risk ≥7.5% in patients 40-75 years"
+      "treatment_thresholds": "Consider statin therapy when 10-year ASCVD risk ≥7.5% in patients 40-75 years",
+      "lifestyle_recommendations": {
+        "diet": "Emphasize vegetables, fruits, legumes, nuts, whole grains, and fish; limit saturated fats, sodium, and processed meats",
+        "physical_activity": "At least 150 minutes per week moderate-intensity or 75 minutes per week vigorous-intensity aerobic activity",
+        "tobacco": "Complete avoidance of tobacco products and secondhand smoke exposure"
+      }
+    },
+    {
+      "guideline_title": "2023 ESC Guidelines for the management of arterial hypertension",
+      "organization": "European Society of Cardiology",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and management of arterial hypertension in adults",
+      "key_recommendations": [
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Initiate antihypertensive drug therapy in patients with grade 2 or 3 hypertension regardless of cardiovascular risk",
+          "evidence_summary": "Multiple trials demonstrate consistent cardiovascular risk reduction"
+        },
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Target office BP <140/90 mmHg in most patients, and <130/80 mmHg if tolerated",
+          "evidence_summary": "SPRINT trial demonstrated benefit with lower targets in selected patients"
+        },
+        {
+          "class": "Class I",
+          "level": "Level B",
+          "recommendation": "Use combination therapy, preferably in a single pill, as initial treatment for most patients",
+          "evidence_summary": "Achieves better BP control more rapidly than monotherapy"
+        },
+        {
+          "class": "Class IIa",
+          "level": "Level B",
+          "recommendation": "Consider ambulatory blood pressure monitoring for diagnosis and treatment monitoring",
+          "evidence_summary": "Superior to office measurements for predicting cardiovascular outcomes"
+        }
+      ],
+      "diagnostic_criteria": {
+        "normal": "<130/85 mmHg",
+        "high_normal": "130-139/85-89 mmHg",
+        "grade_1_hypertension": "140-159/90-99 mmHg",
+        "grade_2_hypertension": "160-179/100-109 mmHg",
+        "grade_3_hypertension": "≥180/110 mmHg"
+      },
+      "treatment_algorithm": "Start with ACE inhibitor/ARB + CCB or diuretic; add third drug from other class if needed",
+      "special_considerations": {
+        "diabetes": "Target BP <130/80 mmHg if tolerated",
+        "chronic_kidney_disease": "ACE inhibitors or ARBs preferred; monitor potassium and creatinine",
+        "elderly": "Consider higher systolic targets (130-139 mmHg) in frail patients"
+      }
+    },
+    {
+      "guideline_title": "2023 AHA/ACC/ACCP/ASPC/NLA/PCNA Guideline for the Management of Patients With Chronic Coronary Disease",
+      "organization": "American Heart Association, American College of Cardiology, American College of Chest Physicians, American Society for Preventive Cardiology, National Lipid Association, Preventive Cardiovascular Nurses Association",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Comprehensive management of patients with chronic coronary disease",
+      "key_recommendations": [
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "High-intensity statin therapy should be prescribed for all patients with chronic coronary disease",
+          "evidence_summary": "Multiple trials demonstrate reduction in major adverse cardiovascular events"
+        },
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Dual antiplatelet therapy with aspirin and P2Y12 inhibitor for appropriate duration based on ischemic and bleeding risk",
+          "evidence_summary": "Balance between ischemic protection and bleeding risk must be individualized"
+        },
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Beta-blockers should be used in patients with heart failure or prior myocardial infarction",
+          "evidence_summary": "Reduces mortality and recurrent events in post-MI patients"
+        },
+        {
+          "class": "Class IIa",
+          "level": "Level B-R",
+          "recommendation": "Consider long-term low-dose colchicine for secondary prevention in patients without contraindications",
+          "evidence_summary": "COLCOT and LoDoCo2 trials demonstrated reduced cardiovascular events"
+        }
+      ],
+      "diagnostic_criteria": {
+        "chronic_coronary_disease": "Established coronary artery disease including prior MI, revascularization, or angiographic evidence of ≥50% stenosis"
+      },
+      "risk_stratification": "Assess both ischemic and bleeding risk to guide duration of dual antiplatelet therapy",
+      "lifestyle_recommendations": {
+        "cardiac_rehabilitation": "Refer all eligible patients to comprehensive cardiac rehabilitation programs",
+        "diet": "Mediterranean-style diet rich in fruits, vegetables, whole grains, and healthy fats",
+        "exercise": "Regular physical activity with at least 150 minutes of moderate-intensity exercise per week"
+      }
+    },
+    {
+      "guideline_title": "2023 Global Initiative for Chronic Obstructive Lung Disease (GOLD) Report",
+      "organization": "Global Initiative for Chronic Obstructive Lung Disease",
+      "publication_year": 2023,
+      "version": "2023 Report",
+      "scope": "Diagnosis, management, and prevention of chronic obstructive pulmonary disease",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Spirometry is required for the diagnosis of COPD; post-bronchodilator FEV1/FVC <0.70 confirms persistent airflow limitation",
+          "evidence_summary": "Standard diagnostic criteria established through consensus and validated in clinical practice"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Long-acting bronchodilators are preferred over short-acting bronchodilators for maintenance treatment",
+          "evidence_summary": "Multiple RCTs demonstrate superior symptom control and reduction in exacerbations"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider inhaled corticosteroids in combination with long-acting bronchodilators for patients with history of exacerbations",
+          "evidence_summary": "Reduces exacerbation frequency in selected patient populations"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Smoking cessation is the most effective intervention to reduce progression of COPD",
+          "evidence_summary": "Multiple studies demonstrate slowed decline in lung function with smoking cessation"
+        }
+      ],
+      "diagnostic_criteria": {
+        "copd": "Post-bronchodilator FEV1/FVC <0.70",
+        "gold_1": "FEV1 ≥80% predicted",
+        "gold_2": "FEV1 50-79% predicted",
+        "gold_3": "FEV1 30-49% predicted",
+        "gold_4": "FEV1 <30% predicted"
+      },
+      "treatment_algorithm": "Based on symptom burden and exacerbation history using ABCD assessment tool",
+      "non_pharmacologic_management": {
+        "pulmonary_rehabilitation": "Recommended for all patients with moderate to severe COPD",
+        "vaccination": "Annual influenza vaccine and pneumococcal vaccine as recommended",
+        "oxygen_therapy": "Long-term oxygen therapy for patients with severe resting hypoxemia"
+      }
+    },
+    {
+      "guideline_title": "2023 American Thyroid Association Guidelines for Thyroid Disease Management",
+      "organization": "American Thyroid Association",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and management of thyroid disorders",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Levothyroxine is the treatment of choice for hypothyroidism",
+          "evidence_summary": "Extensive clinical experience and randomized trials support efficacy and safety"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Target TSH level 0.5-2.5 mIU/L for most adults with hypothyroidism",
+          "evidence_summary": "Observational data suggest patients feel best within this range"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Low Quality Evidence",
+          "recommendation": "Consider combination therapy with liothyronine in patients with persistent symptoms despite normal TSH on levothyroxine",
+          "evidence_summary": "Mixed evidence from clinical trials; may benefit selected patients"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Antithyroid drugs are first-line therapy for Graves' disease",
+          "evidence_summary": "Methimazole preferred over PTU except in first trimester of pregnancy"
+        }
+      ],
+      "diagnostic_criteria": {
+        "hypothyroidism": "Elevated TSH with low free T4",
+        "subclinical_hypothyroidism": "Elevated TSH with normal free T4",
+        "hyperthyroidism": "Suppressed TSH with elevated free T4 or T3",
+        "subclinical_hyperthyroidism": "Suppressed TSH with normal free T4 and T3"
+      },
+      "screening_recommendations": "Screen adults ≥35 years every 5 years; more frequently in high-risk populations",
+      "special_populations": {
+        "pregnancy": "TSH targets differ by trimester; require more frequent monitoring",
+        "elderly": "Consider higher TSH targets (4-6 mIU/L) for patients >70-80 years",
+        "cardiac_disease": "Start with low dose levothyroxine and titrate slowly"
+      }
+    },
+    {
+      "guideline_title": "2023 American College of Rheumatology Guideline for the Management of Rheumatoid Arthritis",
+      "organization": "American College of Rheumatology",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Comprehensive management of rheumatoid arthritis",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Treat-to-target strategy with goal of remission or low disease activity",
+          "evidence_summary": "Multiple trials demonstrate improved outcomes with targeted treatment approach"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Methotrexate is the preferred initial conventional synthetic DMARD for most patients",
+          "evidence_summary": "Superior efficacy and safety profile compared to other DMARDs"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider early addition of biologic DMARDs in patients with poor prognostic factors",
+          "evidence_summary": "Improved long-term outcomes with early aggressive treatment in high-risk patients"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Low-dose glucocorticoids may be used as bridge therapy but should be tapered and discontinued as rapidly as possible",
+          "evidence_summary": "Balance between rapid symptom control and long-term adverse effects"
+        }
+      ],
+      "diagnostic_criteria": "Based on 2010 ACR/EULAR classification criteria including joint involvement, serology, acute phase reactants, and symptom duration",
+      "monitoring_parameters": {
+        "disease_activity": "Regular assessment using validated tools such as DAS28, CDAI, or SDAI",
+        "safety_monitoring": "Regular assessment of CBC, liver enzymes, renal function, and tuberculosis screening before biologic therapy"
+      },
+      "treatment_algorithm": "Step-up approach starting with methotrexate, adding or switching to other DMARDs or biologics based on treatment response"
+    },
+    {
+      "guideline_title": "2023 KDIGO Clinical Practice Guideline for the Management of Glomerular Diseases",
+      "organization": "Kidney Disease: Improving Global Outcomes",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and management of glomerular diseases",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "ACE inhibitors or ARBs are first-line therapy for proteinuric glomerular diseases",
+          "evidence_summary": "Multiple trials demonstrate reduction in proteinuria and slowing of CKD progression"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Corticosteroids are indicated for initial treatment of minimal change disease in adults",
+          "evidence_summary": "High response rates demonstrated in clinical trials and observational studies"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Low Quality Evidence",
+          "recommendation": "Consider rituximab for frequently relapsing or steroid-dependent minimal change disease",
+          "evidence_summary": "Small studies suggest efficacy in reducing relapse rates"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Mycophenolate mofetil or cyclophosphamide combined with corticosteroids for initial treatment of proliferative lupus nephritis",
+          "evidence_summary": "Superior to corticosteroids alone in preserving kidney function"
+        }
+      ],
+      "diagnostic_criteria": "Requires kidney biopsy for definitive diagnosis of most glomerular diseases",
+      "treatment_targets": {
+        "proteinuria": "Target urine protein excretion <0.5 g/day for most glomerular diseases",
+        "blood_pressure": "Target <130/80 mmHg for patients with proteinuria"
+      },
+      "monitoring_recommendations": "Regular assessment of kidney function, proteinuria, and disease-specific serologic markers"
+    },
+    {
+      "guideline_title": "2023 IDSA Guidelines for the Management of Community-Acquired Pneumonia",
+      "organization": "Infectious Diseases Society of America",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and treatment of community-acquired pneumonia in adults",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Use clinical prediction rules such as CURB-65 or PSI to determine site of care",
+          "evidence_summary": "Validated tools that improve appropriate hospitalization decisions"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Empiric antibiotic therapy should cover typical and atypical pathogens",
+          "evidence_summary": "Beta-lactam plus macrolide or respiratory fluoroquinolone monotherapy"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Low Quality Evidence",
+          "recommendation": "Consider procalcitonin testing to guide antibiotic duration",
+          "evidence_summary": "May help reduce unnecessary antibiotic exposure"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Pneumococcal and influenza vaccination according to current recommendations",
+          "evidence_summary": "Significantly reduces incidence of CAP and related complications"
+        }
+      ],
+      "diagnostic_criteria": {
+        "clinical": "Presence of symptoms (cough, fever, sputum production) plus radiographic evidence of infiltrate",
+        "severity_assessment": "CURB-65 criteria: Confusion, Urea >7 mmol/L, Respiratory rate ≥30/min, BP <90/60 mmHg, age ≥65 years"
+      },
+      "empiric_treatment_regimens": {
+        "outpatient": "Macrolide or doxycycline; alternative: respiratory fluoroquinolone",
+        "inpatient": "Beta-lactam + macrolide or respiratory fluoroquinolone monotherapy",
+        "severe": "Beta-lactam + macrolide or beta-lactam + respiratory fluoroquinolone"
+      },
+      "duration_of_therapy": "Minimum 5 days, with extension based on clinical response; typically 7-10 days total"
+    },
+    {
+      "guideline_title": "2023 AASLD Guidelines for the Management of Nonalcoholic Fatty Liver Disease",
+      "organization": "American Association for the Study of Liver Diseases",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and management of nonalcoholic fatty liver disease",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Lifestyle modification with weight loss and exercise is first-line therapy for NAFLD",
+          "evidence_summary": "Weight loss of 5-10% associated with histologic improvement"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Low Quality Evidence",
+          "recommendation": "Consider vitamin E 800 IU daily for non-diabetic patients with biopsy-proven NASH",
+          "evidence_summary": "PIVENS trial demonstrated improvement in histology"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider pioglitazone for patients with biopsy-proven NASH",
+          "evidence_summary": "Improves liver histology but associated with weight gain"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Screen for and manage cardiovascular risk factors in all patients with NAFLD",
+          "evidence_summary": "Cardiovascular disease is the leading cause of mortality in NAFLD patients"
+        }
+      ],
+      "diagnostic_criteria": {
+        "nafld": "Hepatic steatosis by imaging or histology in absence of secondary causes",
+        "nash": "NAFLD with histologic evidence of inflammation and hepatocyte injury"
+      },
+      "screening_recommendations": "Consider screening for NAFLD in high-risk populations such as type 2 diabetes and obesity",
+      "monitoring_parameters": {
+        "liver_function": "Regular monitoring of liver enzymes and synthetic function",
+        "fibrosis_assessment": "Non-invasive fibrosis assessment with FIB-4, ELF test, or vibration-controlled transient elastography"
+      }
+    },
+    {
+      "guideline_title": "2023 ASCO Guideline for the Management of Cancer-Associated Anemia",
+      "organization": "American Society of Clinical Oncology",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Management of anemia in patients with cancer",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Evaluate for correctable causes of anemia before initiating treatment",
+          "evidence_summary": "Iron deficiency, bleeding, nutritional deficiencies, and hemolysis should be addressed"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Erythropoiesis-stimulating agents may be considered for chemotherapy-associated anemia when Hb <10 g/dL",
+          "evidence_summary": "Reduces transfusion requirements but associated with thromboembolic risk"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Iron supplementation should be provided to patients with iron deficiency",
+          "evidence_summary": "Improves hemoglobin response and may reduce ESA requirements"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Red blood cell transfusion for symptomatic anemia or Hb <7-8 g/dL",
+          "evidence_summary": "Balances benefits of improved oxygen delivery with risks of transfusion"
+        }
+      ],
+      "diagnostic_criteria": {
+        "anemia": "Hemoglobin <12 g/dL in women, <13 g/dL in men",
+        "iron_deficiency": "Ferritin <30 ng/mL or transferrin saturation <20%"
+      },
+      "treatment_targets": {
+        "esa_therapy": "Target hemoglobin 10-12 g/dL; avoid exceeding 12 g/dL",
+        "transfusion": "Goal to alleviate symptoms rather than achieve specific hemoglobin target"
+      },
+      "monitoring_recommendations": "Regular monitoring of hemoglobin, iron studies, and assessment for thrombotic events during ESA therapy"
+    },
+    {
+      "guideline_title": "2023 ACC/AHA/SCAI Guideline for Coronary Artery Revascularization",
+      "organization": "American College of Cardiology, American Heart Association, Society for Cardiovascular Angiography and Interventions",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Appropriate use of coronary revascularization in patients with coronary artery disease",
+      "key_recommendations": [
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "Revascularization to improve survival is recommended for patients with significant left main coronary artery disease",
+          "evidence_summary": "Multiple trials demonstrate mortality benefit with CABG compared to medical therapy"
+        },
+        {
+          "class": "Class I",
+          "level": "Level A",
+          "recommendation": "PCI or CABG is recommended for patients with stable angina who remain symptomatic despite optimal medical therapy",
+          "evidence_summary": "Improves quality of life and functional status in symptomatic patients"
+        },
+        {
+          "class": "Class I",
+          "level": "Level B-R",
+          "recommendation": "Radial artery access is preferred over femoral access for coronary angiography and PCI",
+          "evidence_summary": "Reduces bleeding complications and improves patient comfort"
+        },
+        {
+          "class": "Class III",
+          "level": "Level A",
+          "recommendation": "PCI is not recommended for non-culprit lesions during STEMI in hemodynamically stable patients",
+          "evidence_summary": "No benefit and potential harm shown in multiple randomized trials"
+        }
+      ],
+      "indications": {
+        "stable_cad": "Based on symptom burden, medical therapy response, and extent of ischemia",
+        "acs": "Early invasive strategy for high-risk patients with NSTEMI and STEMI"
+      },
+      "procedure_selection": {
+        "cabg": "Preferred for complex multivessel disease, diabetes, and left main disease",
+        "pci": "Preferred for less complex disease, suitable anatomy, and higher surgical risk"
+      },
+      "post_procedure_management": {
+        "antiplatelet_therapy": "Dual antiplatelet therapy duration based on stent type, bleeding risk, and clinical presentation",
+        "risk_factor_modification": "Aggressive management of cardiovascular risk factors post-revascularization"
+      }
+    },
+    {
+      "guideline_title": "2023 NICE Guideline for the Management of Depression in Adults",
+      "organization": "National Institute for Health and Care Excellence",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Identification, assessment, and management of depression in adults",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "SSRIs are first-line pharmacologic treatment for moderate to severe depression",
+          "evidence_summary": "Multiple meta-analyses demonstrate efficacy and generally favorable side effect profile"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Cognitive behavioral therapy is recommended as psychological intervention for depression",
+          "evidence_summary": "Multiple randomized trials demonstrate efficacy comparable to pharmacotherapy"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider combination therapy with antidepressant medication and psychotherapy for moderate to severe depression",
+          "evidence_summary": "Superior to either treatment alone in multiple clinical trials"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Continue antidepressant treatment for at least 6 months after remission of depressive episode",
+          "evidence_summary": "Significantly reduces risk of relapse compared to earlier discontinuation"
+        }
+      ],
+      "diagnostic_criteria": "Based on DSM-5 criteria including depressed mood, anhedonia, and associated symptoms lasting at least 2 weeks",
+      "severity_assessment": {
+        "mild": "Some difficulty with daily activities",
+        "moderate": "Significant difficulty with daily activities",
+        "severe": "Substantial difficulty with daily activities; may have psychotic symptoms"
+      },
+      "treatment_algorithm": "Step-care approach with intensity of treatment matched to depression severity",
+      "monitoring_recommendations": "Assess for treatment response, side effects, and suicidal ideation regularly, especially during initial treatment phase"
+    },
+    {
+      "guideline_title": "2023 ACR Appropriateness Criteria for Imaging of Suspected Pulmonary Embolism",
+      "organization": "American College of Radiology",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Appropriate imaging for diagnosis of pulmonary embolism",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Use clinical prediction rules (Wells score, PERC rule) to determine pre-test probability",
+          "evidence_summary": "Validated tools that improve diagnostic accuracy and reduce unnecessary imaging"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "CT pulmonary angiography is the imaging test of choice for most patients with suspected PE",
+          "evidence_summary": "High sensitivity and specificity for detection of pulmonary emboli"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider ventilation-perfusion scanning for patients with contraindications to CT contrast",
+          "evidence_summary": "Remains a valuable alternative despite lower specificity than CTPA"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Do not perform imaging for PE in patients who meet all PERC rule criteria",
+          "evidence_summary": "Very low probability of PE in PERC-negative patients with low clinical suspicion"
+        }
+      ],
+      "diagnostic_algorithm": "Clinical assessment → D-dimer if low/intermediate probability → CTPA if positive D-dimer or high probability",
+      "imaging_characteristics": {
+        "ctpa": "Sensitivity 83-94%, specificity 94-96%; requires IV contrast",
+        "vq_scan": "Sensitivity 98%, specificity 87%; no contrast required"
+      },
+      "special_considerations": {
+        "pregnancy": "Consider lower extremity Doppler or VQ scan to reduce radiation exposure to breast tissue",
+        "renal_impairment": "Consider VQ scan or non-contrast MR techniques to avoid contrast nephropathy"
+      }
+    },
+    {
+      "guideline_title": "2023 American Academy of Neurology Guideline for Migraine Prevention",
+      "organization": "American Academy of Neurology",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Preventive treatment of episodic and chronic migraine",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Offer preventive therapy for patients with ≥4 migraine days per month or significant disability",
+          "evidence_summary": "Reduces migraine frequency, severity, and associated disability"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Topiramate, divalproex sodium, and beta-blockers are effective for migraine prevention",
+          "evidence_summary": "Multiple randomized controlled trials demonstrate efficacy"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider CGRP monoclonal antibodies for patients with inadequate response or tolerance to oral preventives",
+          "evidence_summary": "Superior efficacy and tolerability but higher cost than traditional oral preventives"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Continue preventive treatment for at least 6-8 weeks at target dose before assessing efficacy",
+          "evidence_summary": "Adequate trial duration necessary to evaluate treatment response"
+        }
+      ],
+      "diagnostic_criteria": "Based on International Classification of Headache Disorders criteria including recurrent headache attacks with specific features",
+      "treatment_goals": {
+        "response": "≥50% reduction in migraine days",
+        "prevention": "Reduce headache frequency, severity, and acute medication use"
+      },
+      "medication_selection": {
+        "first_line": "Beta-blockers, topiramate, divalproex sodium based on comorbidities",
+        "second_line": "CGRP monoclonal antibodies, antidepressants, other antiepileptics",
+        "special_populations": "Consider pregnancy potential, comorbidities, and drug interactions"
+      }
+    },
+    {
+      "guideline_title": "2023 American Gastroenterological Association Guideline on the Management of Irritable Bowel Syndrome",
+      "organization": "American Gastroenterological Association",
+      "publication_year": 2023,
+      "version": "2023 Update",
+      "scope": "Diagnosis and management of irritable bowel syndrome",
+      "key_recommendations": [
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Diagnose IBS based on symptom criteria (Rome IV) without extensive testing in absence of alarm features",
+          "evidence_summary": "Limited diagnostic testing is cost-effective and avoids unnecessary procedures"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "High Quality Evidence",
+          "recommendation": "Recommend a trial of low FODMAP diet for patients with IBS",
+          "evidence_summary": "Multiple randomized trials demonstrate improvement in global symptoms"
+        },
+        {
+          "class": "Conditional Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Consider peppermint oil for global symptom improvement in IBS",
+          "evidence_summary": "Meta-analyses show benefit for overall symptoms and abdominal pain"
+        },
+        {
+          "class": "Strong Recommendation",
+          "level": "Moderate Quality Evidence",
+          "recommendation": "Use psychological therapies (CBT, gut-directed hypnotherapy) for patients with refractory symptoms",
+          "evidence_summary": "Effective for reducing symptom severity and improving quality of life"
+        }
+      ],
+      "diagnostic_criteria": "Rome IV criteria: Recurrent abdominal pain at least 1 day/week associated with change in frequency or form of stool",
+      "subtypes": {
+        "ibs_d": "Diarrhea-predominant",
+        "ibs_c": "Constipation-predominant",
+        "ibs_m": "Mixed",
+        "ibs_u": "Unclassified"
+      },
+      "treatment_approach": {
+        "dietary": "Low FODMAP diet, fiber supplementation based on subtype",
+        "pharmacologic": "Antispasmodics, antidepressants, secretagogues, bile acid sequestrants based on subtype",
+        "psychological": "Cognitive behavioral therapy, gut-directed hypnotherapy for refractory symptoms"
+      }
     }
   ]
 }

@@ -421,6 +421,11 @@
             </div>
         `;
         
+        // Warning for fallback care options
+        if (data.care_options && data.care_options.length > 0 && data.care_options[0].rationale.includes('Based on current clinical guidelines and patient presentation')) {
+            html += `<div class='alert alert-warning'><strong>Warning:</strong> The recommendations are based on fallback logic due to an AI response parsing error. Citations may not be query-specific.</div>`;
+        }
+        
         resultsContent.innerHTML = html;
         document.getElementById('results-section').style.display = 'block';
         document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });

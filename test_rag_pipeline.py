@@ -86,7 +86,7 @@ class RAGPipelineTest:
             print("🔍 Testing Qdrant connectivity...")
             test_query = self.hybrid_rag.semantic_search_across_levels(
                 query_text="diabetes treatment",
-                level_filter=["MIDDLE", "BOTTOM"],
+                level_filter=["middle", "bottom"],  # Use lowercase levels
                 top_k=3
             )
             vector_count = len(test_query.get('vector_results', []))
@@ -125,7 +125,7 @@ class RAGPipelineTest:
                 print(f"🔎 Searching: {query}")
                 results = self.hybrid_rag.semantic_search_across_levels(
                     query_text=query,
-                    level_filter=["MIDDLE", "BOTTOM"],  # Medical literature and concepts
+                    level_filter=["middle", "bottom"],  # Medical literature and concepts (lowercase)
                     top_k=5
                 )
                 

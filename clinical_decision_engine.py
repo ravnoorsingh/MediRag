@@ -152,6 +152,14 @@ class ClinicalDecisionEngine:
             "follow_up_recommendations": self._generate_followup_plan(patient_context, care_options)
         }
         
+        # Debug: Print evidence for each care option after response is created
+        print("\n==== DEBUG: Serialized Evidence for Care Options ====")
+        for idx, opt in enumerate(response["care_options"]):
+            print(f"Care Option {idx+1}: {opt['title']}")
+            for eidx, ev in enumerate(opt["evidence"]):
+                print(f"  [{eidx+1}] {ev['title']} | Score: {ev['confidence_score']}")
+        print("====================================================\n")
+        
         print(f"✅ Generated {len(care_options)} evidence-based care options")
         return response
     
@@ -310,10 +318,10 @@ class ClinicalDecisionEngine:
         for query_text in search_queries:
             print(f"🔎 Searching with: {query_text[:80]}...")
             
-            # Search medical literature and concepts (MIDDLE and BOTTOM levels)
+            # Search medical literature and concepts (middle and bottom levels)
             search_results = self.hybrid_rag.semantic_search_across_levels(
                 query_text=query_text,
-                level_filter=["MIDDLE", "BOTTOM"],  # Focus on literature and medical concepts
+                level_filter=["middle", "bottom"],  # Focus on literature and medical concepts
                 top_k=8
             )
             
@@ -323,13 +331,17 @@ class ClinicalDecisionEngine:
                     payload = result.payload
                     confidence = float(result.score) if hasattr(result, 'score') else 0.8
                     
+                    # Extract content from different payload structures
+                    content = self._extract_content_from_payload(payload)
+                    title = self._extract_title_from_payload(payload)
+                    
                     evidence = ClinicalEvidence(
-                        source_id=payload.get('node_id', str(uuid.uuid4())),
-                        source_type=self._determine_source_type(payload.get('node_type', 'unknown')),
-                        title=payload.get('title', payload.get('content', 'Unknown source')[:100]),
-                        excerpt=self._create_evidence_excerpt(payload.get('content', ''), query_text),
+                        source_id=payload.get('id', payload.get('node_id', str(uuid.uuid4()))),
+                        source_type=self._determine_source_type(payload.get('type', payload.get('node_type', 'unknown'))),
+                        title=title,
+                        excerpt=self._create_evidence_excerpt(content, query_text),
                         confidence_score=confidence,
-                        publication_year=payload.get('year'),
+                        publication_year=payload.get('publication_year', payload.get('year')),
                         authors=payload.get('authors')
                     )
                     evidence_list.append(evidence)
@@ -342,13 +354,17 @@ class ClinicalDecisionEngine:
                 if hasattr(node_data, 'get') or isinstance(node_data, dict):
                     node_dict = node_data if isinstance(node_data, dict) else dict(node_data)
                     
+                    # Extract content from different node structures
+                    content = self._extract_content_from_node(node_dict)
+                    title = self._extract_title_from_node(node_dict)
+                    
                     evidence = ClinicalEvidence(
                         source_id=node_dict.get('id', node_dict.get('cui', str(uuid.uuid4()))),
                         source_type=self._determine_graph_source_type(node_dict),
-                        title=self._extract_node_title(node_dict),
-                        excerpt=self._create_evidence_excerpt(node_dict.get('content', ''), query_text),
+                        title=title,
+                        excerpt=self._create_evidence_excerpt(content, query_text),
                         confidence_score=float(similarity),
-                        publication_year=node_dict.get('year'),
+                        publication_year=node_dict.get('publication_year', node_dict.get('year')),
                         authors=node_dict.get('authors')
                     )
                     evidence_list.append(evidence)
@@ -370,15 +386,15 @@ class ClinicalDecisionEngine:
     
     def _create_evidence_excerpt(self, content: str, query_context: str) -> str:
         """Create a relevant excerpt from content based on query context"""
-        if not content:
+        if not content or content.strip() == "":
             return "No content available"
         
         # If content is short, return as is
         if len(content) <= 300:
-            return content
+            return content.strip()
         
         # Try to find relevant sections based on query keywords
-        query_keywords = query_context.lower().split()
+        query_keywords = [word.lower() for word in query_context.split() if len(word) > 3]
         content_lower = content.lower()
         
         # Find best starting position based on keyword matches
@@ -392,8 +408,82 @@ class ClinicalDecisionEngine:
                 max_matches = matches
                 best_pos = i
         
-        excerpt = content[best_pos:best_pos+300]
+        excerpt = content[best_pos:best_pos+300].strip()
         return excerpt + "..." if best_pos + 300 < len(content) else excerpt
+    
+    def _extract_content_from_payload(self, payload: dict) -> str:
+        """Extract content from Qdrant payload"""
+        # Try different content fields
+        content_fields = ['text', 'content', 'definition', 'excerpt', 'abstract', 'summary']
+        for field in content_fields:
+            if field in payload and payload[field]:
+                return str(payload[field])
+        
+        # Fallback: combine available information
+        if 'term' in payload and 'definition' in payload:
+            return f"{payload['term']}: {payload.get('definition', '')}"
+        elif 'title' in payload:
+            return payload['title']
+        
+        return "Content not available"
+    
+    def _extract_title_from_payload(self, payload: dict) -> str:
+        """Extract title from Qdrant payload"""
+        # Try different title fields
+        title_fields = ['title', 'name', 'term', 'heading']
+        for field in title_fields:
+            if field in payload and payload[field]:
+                return str(payload[field])[:200]  # Limit title length
+        
+        # Fallback to content preview
+        content = self._extract_content_from_payload(payload)
+        if content and content != "Content not available":
+            return content[:100] + "..." if len(content) > 100 else content
+        
+        return "Unknown source"
+    
+    def _extract_content_from_node(self, node_dict: dict) -> str:
+        """Extract content from Neo4j node"""
+        # Try different content fields
+        content_fields = ['content', 'definition', 'text', 'description', 'abstract', 'summary']
+        for field in content_fields:
+            if field in node_dict and node_dict[field]:
+                return str(node_dict[field])
+        
+        # Special handling for medical dictionary terms
+        if 'term' in node_dict and 'definition' in node_dict:
+            return f"Medical Term: {node_dict['term']}. Definition: {node_dict.get('definition', '')}"
+        
+        # Fallback: try to construct from available fields
+        if 'title' in node_dict:
+            title_content = node_dict['title']
+            if 'authors' in node_dict and node_dict['authors']:
+                title_content += f" by {', '.join(node_dict['authors'][:2])}"
+            return title_content
+        
+        return "Content not available"
+    
+    def _extract_title_from_node(self, node_dict: dict) -> str:
+        """Extract title from Neo4j node"""
+        # Try different title fields
+        title_fields = ['title', 'name', 'term', 'heading']
+        for field in title_fields:
+            if field in node_dict and node_dict[field]:
+                return str(node_dict[field])[:200]  # Limit title length
+        
+        # Special handling for different node types
+        data_type = node_dict.get('data_type', '')
+        if 'medical_dictionary' in data_type and 'term' in node_dict:
+            return f"Medical Dictionary: {node_dict['term']}"
+        elif 'real_medical_paper' in data_type:
+            return f"Research Paper: {node_dict.get('title', 'Medical Research')}"
+        
+        # Fallback to content preview
+        content = self._extract_content_from_node(node_dict)
+        if content and content != "Content not available":
+            return content[:100] + "..." if len(content) > 100 else content
+        
+        return "Medical concept"
     
     def _extract_node_title(self, node_dict: dict) -> str:
         """Extract a meaningful title from node data"""
@@ -407,24 +497,35 @@ class ClinicalDecisionEngine:
     
     def _determine_graph_source_type(self, node_dict: dict) -> str:
         """Determine source type from Neo4j node data"""
+        # Check data_type field first (for new data sources)
+        data_type = node_dict.get('data_type', '')
+        if 'real_medical_paper' in data_type:
+            return 'research_paper'
+        elif 'comprehensive_medical_dictionary' in data_type:
+            return 'medical_dictionary'
+        elif 'extracted_medical_concept' in data_type:
+            return 'medical_concept'
+            
         # Check node labels if available
         labels = node_dict.get('labels', [])
         if isinstance(labels, list):
             for label in labels:
-                if 'paper' in label.lower() or 'research' in label.lower():
+                if 'realmedical' in label.lower() or 'paper' in label.lower() or 'research' in label.lower():
                     return 'research_paper'
+                elif 'dictionary' in label.lower() or 'medicalterm' in label.lower():
+                    return 'medical_dictionary'
                 elif 'book' in label.lower() or 'textbook' in label.lower():
                     return 'textbook'
                 elif 'guideline' in label.lower():
                     return 'clinical_guideline'
-                elif 'concept' in label.lower():
+                elif 'concept' in label.lower() or 'disease' in label.lower() or 'treatment' in label.lower():
                     return 'medical_concept'
         
         # Fallback to level-based determination
         level = node_dict.get('level', '')
-        if level == 'MIDDLE':
+        if level == 'MIDDLE' or level == 'middle':
             return 'medical_literature'
-        elif level == 'BOTTOM':
+        elif level == 'BOTTOM' or level == 'bottom':
             return 'medical_concept'
         else:
             return 'unknown'
@@ -434,11 +535,15 @@ class ClinicalDecisionEngine:
         type_mapping = {
             'paper': 'research_paper',
             'research_paper': 'research_paper',
+            'real_medical_paper': 'research_paper',
+            'paper_section': 'research_paper',
             'book': 'textbook',
             'textbook': 'textbook',
             'guideline': 'clinical_guideline',
             'clinical_guideline': 'clinical_guideline',
-            'concept': 'medical_concept'
+            'concept': 'medical_concept',
+            'medical_dictionary_term': 'medical_dictionary',
+            'medical_term': 'medical_dictionary'
         }
         return type_mapping.get(node_type.lower(), 'unknown')
     
@@ -636,12 +741,16 @@ class ClinicalDecisionEngine:
             except (ValueError, KeyError):
                 continue
         
-        # If no specific citations found, assign top 3 pieces of evidence from the map
+        # If no specific citations found, assign the top 3 highest scoring evidence pieces
         if not assigned_evidence:
-            # Get first 3 evidence pieces from the index map
-            sorted_indices = sorted(evidence_index_map.keys())
-            for i in sorted_indices[:3]:
-                assigned_evidence.append(evidence_index_map[i])
+            # Sort evidence_index_map by confidence_score descending
+            sorted_evidence = sorted(
+                evidence_index_map.values(),
+                key=lambda ev: getattr(ev, 'confidence_score', 0),
+                reverse=True
+            )
+            for ev in sorted_evidence[:3]:
+                assigned_evidence.append(ev)
         
         return assigned_evidence
     
@@ -653,23 +762,54 @@ class ClinicalDecisionEngine:
     ) -> List[CareOption]:
         """Generate basic care options when AI generation fails"""
         print("⚠️ Generating fallback care options")
+        print(f"   📋 Evidence received: {len(evidence)} items")
+        for i, ev in enumerate(evidence[:3]):
+            print(f"   {i+1}. {ev.title[:60]} | Score: {ev.confidence_score:.3f}")
         
+        # Sort evidence by confidence_score descending
+        sorted_evidence = sorted(
+            evidence,
+            key=lambda ev: getattr(ev, 'confidence_score', 0),
+            reverse=True
+        )
+        top_evidence = sorted_evidence[:3]
+        print(f"   🔝 Top 3 evidence after sorting:")
+        for i, ev in enumerate(top_evidence):
+            print(f"   {i+1}. {ev.title[:60]} | Score: {ev.confidence_score:.3f}")
         fallback_options = []
-        
         for i in range(3):
             option = CareOption(
                 option_id=str(uuid.uuid4()),
-                title=f"Care Option {i+1}",
-                description=f"Evidence-based treatment approach {i+1} for the clinical question",
-                rationale="Based on available clinical evidence and patient presentation",
-                confidence=ConfidenceLevel.MEDIUM,
-                evidence=evidence[:2] if evidence else [],
-                contraindications=["Patient-specific contraindications"],
-                monitoring_requirements=["Regular clinical monitoring"],
-                expected_outcomes="Monitor patient response and adjust treatment as needed"
+                title=["Primary Treatment Approach", "Alternative Treatment Option", "Conservative Management"][i],
+                description=[
+                    "Standard evidence-based treatment protocol",
+                    "Alternative therapeutic approach",
+                    "Non-pharmacological supportive care"
+                ][i],
+                rationale=[
+                    "Based on current clinical guidelines and patient presentation",
+                    "Suitable for patients who cannot tolerate first-line therapy",
+                    "Appropriate for stable patients with minimal symptoms"
+                ][i],
+                confidence=[ConfidenceLevel("MEDIUM"), ConfidenceLevel("MEDIUM"), ConfidenceLevel("LOW")][i],
+                evidence=top_evidence,
+                contraindications=[
+                    ["Patient allergies", "Drug interactions"],
+                    ["Specific patient factors"],
+                    ["Severe symptoms", "High-risk patients"]
+                ][i],
+                monitoring_requirements=[
+                    ["Regular follow-up", "Monitor for adverse effects"],
+                    ["Close monitoring required", "Regular assessments"],
+                    ["Symptom monitoring", "Regular check-ups"]
+                ][i],
+                expected_outcomes=[
+                    "Expected improvement with standard care",
+                    "Good clinical response expected",
+                    "Gradual improvement expected"
+                ][i]
             )
             fallback_options.append(option)
-        
         return fallback_options
     
     def _create_patient_summary(self, patient_context: PatientContext) -> Dict[str, Any]:
@@ -734,6 +874,13 @@ class ClinicalDecisionEngine:
     
     def _assess_evidence_quality(self, evidence: List[ClinicalEvidence]) -> Dict[str, Any]:
         """Assess the quality and strength of available evidence"""
+        # Debug: Print evidence for each care option before returning
+        print("\n==== DEBUG: Serialized Evidence for Care Options ====")
+        for idx, opt in enumerate(response["care_options"]):
+            print(f"Care Option {idx+1}: {opt['title']}")
+            for eidx, ev in enumerate(opt["evidence"]):
+                print(f"  [{eidx+1}] {ev['title']} | Score: {ev['confidence_score']}")
+        print("====================================================\n")
         if not evidence:
             return {"overall_quality": "INSUFFICIENT", "evidence_count": 0}
         
@@ -808,5 +955,3 @@ if __name__ == "__main__":
     
     print("\n" + "="*50)
     print("CLINICAL DECISION SUPPORT RESULT")
-    print("="*50)
-    print(json.dumps(result, indent=2, default=str))
