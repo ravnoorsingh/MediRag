@@ -49,7 +49,8 @@ A comprehensive **Medical Knowledge Graph RAG (Retrieval-Augmented Generation)**
 *Main clinical interface with patient data upload and query capabilities*
 
 ### 🧠 Neo4j Knowledge Graph
-![Knowledge Graph](screenshots/neo4j_graph.png)
+![Knowledge Graph](/neo4j_graph.png)
+
 *Medical concept relationships and evidence connections*
 
 ### 🔍 Query Results
