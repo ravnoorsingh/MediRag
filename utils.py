@@ -154,7 +154,7 @@ def call_llm(sys, user):
                     "max_tokens": 500
                 }
             },
-            timeout=60
+            timeout=160
         )
         response.raise_for_status()
         result = response.json()

@@ -92,93 +92,130 @@ class ClinicalDecisionEngine:
         print("🏥 Clinical Decision Support System initialized")
         print(f"📋 Session ID: {self.session_id}")
     
-    def process_clinical_query(
-        self, 
-        patient_data: Dict[str, Any],
-        clinical_question: str,
-        chief_complaint: str,
-        urgency: str = "routine"
-    ) -> Dict[str, Any]:
-        """
-        Main entry point for clinical decision support
-        
-        Args:
-            patient_data: FHIR-formatted patient record
-            clinical_question: Doctor's specific query
-            chief_complaint: Patient's primary concern
-            urgency: Priority level ('urgent', 'routine', 'followup')
+    def process_clinical_query(self, query: str, patient_context: Optional[Dict] = None, 
+                             chief_complaint: str = "", urgency: str = "routine") -> Dict[str, Any]:
+        """Process a clinical query and return evidence-based recommendations"""
+        try:
+            print(f"🔍 Processing clinical query: {query}")
+            print(f"📊 Chief complaint: {chief_complaint}")
+            print(f"📊 Urgency level: {urgency}")
             
-        Returns:
-            Comprehensive clinical decision support response
-        """
-        print(f"🔍 Processing clinical query: {clinical_question}")
-        
-        # 1. Create clinical query object
-        query = ClinicalQuery(
-            query_id=str(uuid.uuid4()),
-            patient_id=patient_data.get('id', 'unknown'),
-            chief_complaint=chief_complaint,
-            specific_question=clinical_question,
-            urgency_level=urgency,
-            timestamp=datetime.now()
-        )
-        
-        # 2. Extract relevant patient context
-        patient_context = self._extract_patient_context(patient_data, clinical_question)
-        
-        # 3. Perform intelligent medical retrieval
-        relevant_evidence = self._retrieve_relevant_evidence(
-            patient_context, clinical_question, chief_complaint
-        )
-        
-        # 4. Generate evidence-based care options
-        care_options = self._generate_care_options(
-            patient_context, clinical_question, relevant_evidence
-        )
-        
-        # 5. Compile comprehensive response
-        response = {
-            "query_info": {
-                "query_id": query.query_id,
-                "patient_id": query.patient_id,
-                "timestamp": query.timestamp.isoformat(),
-                "urgency": query.urgency_level
-            },
-            "patient_summary": self._create_patient_summary(patient_context),
-            "clinical_question": clinical_question,
-            "care_options": [self._serialize_care_option(option) for option in care_options],
-            "risk_assessment": self._assess_clinical_risks(patient_context, care_options),
-            "evidence_quality": self._assess_evidence_quality(relevant_evidence),
-            "follow_up_recommendations": self._generate_followup_plan(patient_context, care_options)
-        }
-        
-        # Debug: Print evidence for each care option after response is created
-        print("\n==== DEBUG: Serialized Evidence for Care Options ====")
-        for idx, opt in enumerate(response["care_options"]):
-            print(f"Care Option {idx+1}: {opt['title']}")
-            for eidx, ev in enumerate(opt["evidence"]):
-                print(f"  [{eidx+1}] {ev['title']} | Score: {ev['confidence_score']}")
-        print("====================================================\n")
-        
-        print(f"✅ Generated {len(care_options)} evidence-based care options")
-        return response
+            # Extract patient context
+            print(f"📊 Extracting relevant patient context...")
+            context = self._extract_patient_context(patient_context, query)
+            # Guarantee context is a PatientContext object
+            if not isinstance(context, PatientContext):
+                print("⚠️ patient_context is not a PatientContext object after extraction. Attempting to reconstruct.")
+                try:
+                    context = PatientContext(**context) if isinstance(context, dict) else PatientContext(
+                        patient_id="unknown",
+                        demographics={},
+                        relevant_history=[],
+                        current_medications=[],
+                        vital_signs={},
+                        lab_results={},
+                        allergies=[],
+                        risk_factors=[]
+                    )
+                except Exception as e:
+                    print(f"⚠️ Could not reconstruct PatientContext: {e}")
+                    context = PatientContext(
+                        patient_id="unknown",
+                        demographics={},
+                        relevant_history=[],
+                        current_medications=[],
+                        vital_signs={},
+                        lab_results={},
+                        allergies=[],
+                        risk_factors=[]
+                    )
+            
+            # Remove update of context['chief_complaint'] since context is a PatientContext object, not a dict
+                
+            print(f"✅ Extracted context: {len(context.relevant_history)} relevant conditions, {len(context.current_medications)} medications")
+            
+            # Retrieve relevant medical evidence
+            print(f"🔍 Retrieving relevant medical evidence...")
+            evidence = self._retrieve_relevant_evidence(context, query, chief_complaint)
+            print(f"✅ Retrieved {len(evidence)} unique pieces of medical evidence")
+            
+            # Generate evidence-based care options
+            print(f"💡 Generating evidence-based care options...")
+            try:
+                # Ensure context is a PatientContext object before LLM generation
+                if not isinstance(context, PatientContext):
+                    try:
+                        context = PatientContext(**context) if isinstance(context, dict) else PatientContext()
+                    except Exception as e:
+                        print(f"⚠️ Could not reconstruct PatientContext: {e}")
+                care_options = self._generate_care_options(context, query, evidence)
+                print(f"✅ Generated {len(care_options)} care options with evidence citations")
+            except Exception as llm_error:
+                print(f"⚠️ LLM generation failed: {llm_error}")
+                # Fallback: create basic care options from evidence
+                care_options = self._generate_fallback_care_options(context, query, evidence)
+                print(f"✅ Created {len(care_options)} fallback care options")
+            
+            # Debug evidence serialization
+            print("\n==== DEBUG: Serialized Evidence for Care Options ====")
+            for i, option in enumerate(care_options, 1):
+                # Use attribute access for CareOption dataclass
+                print(f"Care Option {i}: {getattr(option, 'title', 'Unknown')}")
+                for j, ev in enumerate(getattr(option, 'evidence', [])):
+                    print(f"  [{j+1}] {getattr(ev, 'title', 'No title')} | Score: {getattr(ev, 'confidence_score', 'N/A')}")
+            print("====================================================\n")
+            
+            # Prepare final response
+            result = {
+                'query_info': {
+                    'query_id': str(uuid.uuid4()),
+                    'original_query': query,
+                    'chief_complaint': chief_complaint,
+                    'urgency': urgency,
+                    'processed_at': datetime.now().isoformat(),
+                    'patient_context_used': bool(patient_context)
+                },
+                'patient_summary': context,
+                'care_options': [self._serialize_care_option(option) for option in care_options],
+                'evidence_quality': {
+                    'total_evidence_pieces': len(evidence),
+                    'high_confidence_pieces': len([e for e in evidence if getattr(e, 'confidence_score', 0) > 0.7]),
+                    'source_diversity': len(set(getattr(e, 'source_type', 'unknown') for e in evidence)),
+                    'overall_quality': self._assess_evidence_quality(evidence),
+                    'sources_used': len(set(getattr(e, 'source_id', 'unknown') for e in evidence))
+                },
+                'follow_up_recommendations': self._generate_followup_plan(context, care_options)
+            }
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error processing clinical query: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            # Return error response instead of raising exception
+            return {
+                'error': f"Failed to process clinical query: {str(e)}",
+                'query_info': {
+                    'original_query': query,
+                    'chief_complaint': chief_complaint,
+                    'urgency': urgency,
+                    'processed_at': datetime.now().isoformat(),
+                    'patient_context_used': bool(patient_context)
+                },
+                'patient_summary': {'summary': 'Error extracting patient context'},
+                'care_options': [],
+                'evidence_quality': {'total_evidence_pieces': 0},
+                'follow_up_recommendations': []
+            }
     
-    def _extract_patient_context(
-        self, 
-        patient_data: Dict[str, Any], 
-        clinical_question: str
-    ) -> PatientContext:
-        """Extract and filter relevant patient data based on clinical question"""
-        print("📊 Extracting relevant patient context...")
+    def _extract_patient_context(self, patient_data: Dict[str, Any], clinical_question: str) -> PatientContext:
+        """Extract relevant patient context from provided data"""
+        print("🔍 Extracting patient context...")
         
-        # Parse FHIR or standard patient data
         demographics = patient_data.get('demographics', {})
-        
-        # Use AI to identify relevant history based on the question
-        full_history = patient_data.get('past_medical_history', [])
-        relevant_history = self._filter_relevant_history(full_history, clinical_question)
-        
-        # Extract current clinical state
+        relevant_history = patient_data.get('relevant_history', [])
         medications = patient_data.get('medications', [])
         vitals = patient_data.get('vital_signs', {})
         labs = patient_data.get('laboratory_results', {})
@@ -198,7 +235,7 @@ class ClinicalDecisionEngine:
             risk_factors=risk_factors
         )
         
-        print(f"✅ Extracted context: {len(relevant_history)} relevant conditions, {len(medications)} medications")
+        print(f"✅ Extracted context: {len(context.relevant_history)} relevant conditions, {len(context.current_medications)} medications")
         return context
     
     def _filter_relevant_history(
@@ -504,7 +541,7 @@ class ClinicalDecisionEngine:
         elif 'comprehensive_medical_dictionary' in data_type:
             return 'medical_dictionary'
         elif 'extracted_medical_concept' in data_type:
-            return 'medical_concept'
+            return 'medical_dictionary'  # Map concepts to dictionary for now
             
         # Check node labels if available
         labels = node_dict.get('labels', [])
@@ -515,20 +552,20 @@ class ClinicalDecisionEngine:
                 elif 'dictionary' in label.lower() or 'medicalterm' in label.lower():
                     return 'medical_dictionary'
                 elif 'book' in label.lower() or 'textbook' in label.lower():
-                    return 'textbook'
+                    return 'medical_textbook'
                 elif 'guideline' in label.lower():
-                    return 'clinical_guideline'
+                    return 'research_paper'  # Map guidelines to research_paper
                 elif 'concept' in label.lower() or 'disease' in label.lower() or 'treatment' in label.lower():
-                    return 'medical_concept'
+                    return 'medical_dictionary'  # Map concepts to dictionary
         
         # Fallback to level-based determination
         level = node_dict.get('level', '')
         if level == 'MIDDLE' or level == 'middle':
-            return 'medical_literature'
+            return 'research_paper'  # Map middle level to research_paper
         elif level == 'BOTTOM' or level == 'bottom':
-            return 'medical_concept'
+            return 'medical_dictionary'  # Map bottom level to dictionary
         else:
-            return 'unknown'
+            return 'medical_dictionary'  # Default to dictionary
     
     def _determine_source_type(self, node_type: str) -> str:
         """Map node types to standardized source types"""
@@ -537,15 +574,15 @@ class ClinicalDecisionEngine:
             'research_paper': 'research_paper',
             'real_medical_paper': 'research_paper',
             'paper_section': 'research_paper',
-            'book': 'textbook',
-            'textbook': 'textbook',
-            'guideline': 'clinical_guideline',
-            'clinical_guideline': 'clinical_guideline',
-            'concept': 'medical_concept',
+            'book': 'medical_textbook',
+            'textbook': 'medical_textbook',
+            'guideline': 'research_paper',
+            'clinical_guideline': 'research_paper',
+            'concept': 'medical_dictionary',
             'medical_dictionary_term': 'medical_dictionary',
             'medical_term': 'medical_dictionary'
         }
-        return type_mapping.get(node_type.lower(), 'unknown')
+        return type_mapping.get(node_type.lower(), 'medical_dictionary')
     
     def _generate_care_options(
         self,
@@ -668,6 +705,7 @@ class ClinicalDecisionEngine:
             
         except Exception as e:
             print(f"Error generating care options: {e}")
+            # Use patient_context and clinical_question from arguments
             return self._generate_fallback_care_options(patient_context, clinical_question, evidence)
     
     def _parse_care_options_response(self, response: str) -> List[Dict[str, Any]]:
@@ -787,12 +825,12 @@ class ClinicalDecisionEngine:
                     "Non-pharmacological supportive care"
                 ][i],
                 rationale=[
-                    "Based on current clinical guidelines and patient presentation",
-                    "Suitable for patients who cannot tolerate first-line therapy",
-                    "Appropriate for stable patients with minimal symptoms"
+                    f"Based on evidence: {top_evidence[i].title if i < len(top_evidence) else 'N/A'}",
+                    f"Supported by: {top_evidence[i].title if i < len(top_evidence) else 'N/A'}",
+                    f"Clinical context from: {top_evidence[i].title if i < len(top_evidence) else 'N/A'}"
                 ][i],
                 confidence=[ConfidenceLevel("MEDIUM"), ConfidenceLevel("MEDIUM"), ConfidenceLevel("LOW")][i],
-                evidence=top_evidence,
+                evidence=[top_evidence[i]] if i < len(top_evidence) else [],
                 contraindications=[
                     ["Patient allergies", "Drug interactions"],
                     ["Specific patient factors"],
@@ -874,13 +912,6 @@ class ClinicalDecisionEngine:
     
     def _assess_evidence_quality(self, evidence: List[ClinicalEvidence]) -> Dict[str, Any]:
         """Assess the quality and strength of available evidence"""
-        # Debug: Print evidence for each care option before returning
-        print("\n==== DEBUG: Serialized Evidence for Care Options ====")
-        for idx, opt in enumerate(response["care_options"]):
-            print(f"Care Option {idx+1}: {opt['title']}")
-            for eidx, ev in enumerate(opt["evidence"]):
-                print(f"  [{eidx+1}] {ev['title']} | Score: {ev['confidence_score']}")
-        print("====================================================\n")
         if not evidence:
             return {"overall_quality": "INSUFFICIENT", "evidence_count": 0}
         

@@ -268,6 +268,8 @@
         document.getElementById('results-section').style.display = 'none';
         document.querySelector('.query-section').scrollIntoView({ behavior: 'smooth' });
         
+        console.log('Sending clinical query:', queryData);
+        
         try {
             const response = await fetch('/clinical/query', {
                 method: 'POST',
@@ -277,22 +279,102 @@
                 body: JSON.stringify(queryData)
             });
             
+            console.log('Response status:', response.status, response.statusText);
             const result = await response.json();
+            console.log('Response data:', result);
             
             // Hide loading state
             document.getElementById('loading-section').style.display = 'none';
             
-            if (result.success) {
-                displayResults(result.result);
+            if (response.ok && !result.error) {
+                // Success case: result is the direct clinical decision data
+                console.log('Displaying results:', result);
+                displayResults(result);
             } else {
-                displayError(result.error || 'Unknown error occurred');
+                // Error case: either HTTP error status or result has error property
+                const errorMsg = result.error || `Server error (${response.status}): ${response.statusText}`;
+                console.error('Error occurred:', errorMsg);
+                displayError(errorMsg);
             }
             
         } catch (error) {
+            console.error('Network error:', error);
             document.getElementById('loading-section').style.display = 'none';
             displayError('Network error: ' + error.message);
         }
     });
+    
+    // Add test function
+    async function testClinicalEndpoint() {
+        try {
+            console.log('🧪 Testing clinical endpoint...');
+            
+            const response = await fetch('/test/clinical-query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: 'Test query'
+                })
+            });
+            
+            const result = await response.json();
+            console.log('🧪 Test result:', result);
+            alert(`Test result: ${JSON.stringify(result, null, 2)}`);
+            
+        } catch (error) {
+            console.error('🧪 Test error:', error);
+            alert(`Test error: ${error.message}`);
+        }
+    }
+    
+    async function submitClinicalQuery() {
+        const queryInput = document.getElementById('clinicalQuery');
+        const query = queryInput.value.trim();
+        
+        if (!query) {
+            alert('Please enter a clinical question');
+            return;
+        }
+        
+        console.log('🔍 Submitting clinical query:', query);
+        displayLoading();
+        
+        try {
+            const response = await fetch('/clinical/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query
+                })
+            });
+            
+            console.log('📡 Response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ HTTP Error:', response.status, errorText);
+                displayError(`HTTP ${response.status}: ${errorText}`);
+                return;
+            }
+            
+            const result = await response.json();
+            console.log('✅ Clinical query result:', result);
+            
+            if (result.error) {
+                displayError(result.error);
+            } else {
+                displayResults(result);
+            }
+            
+        } catch (error) {
+            console.error('❌ Network error:', error);
+            displayError(`Network error: ${error.message}`);
+        }
+    }
     
     function displayResults(data) {
         const resultsContent = document.getElementById('results-content');
@@ -321,8 +403,8 @@
                 </div>
                 <div class="card-body">
                     <strong>Patient:</strong> ${data.patient_summary.demographics.age} year old ${data.patient_summary.demographics.gender}<br>
-                    <strong>Key Conditions:</strong> ${data.patient_summary.key_conditions.join(', ') || 'None recorded'}<br>
-                    <strong>Risk Factors:</strong> ${data.patient_summary.risk_factors.join(', ') || 'None identified'}
+                    <strong>Key Conditions:</strong> ${(Array.isArray(data.patient_summary.key_conditions) ? data.patient_summary.key_conditions.join(', ') : 'None recorded')}<br>
+                    <strong>Risk Factors:</strong> ${(Array.isArray(data.patient_summary.risk_factors) ? data.patient_summary.risk_factors.join(', ') : 'None identified')}
                 </div>
             </div>
         `;
@@ -338,8 +420,8 @@
                             <span class="badge bg-primary me-2">${index + 1}</span>
                             ${option.title}
                         </h5>
-                        <span class="confidence-${option.confidence.toLowerCase()}">
-                            <i class="fas fa-circle me-1"></i>${option.confidence} Confidence
+                        <span class="confidence-${option.confidence ? option.confidence.toLowerCase() : 'unknown'}">
+                            <i class="fas fa-circle me-1"></i>${option.confidence || 'Unknown'} Confidence
                         </span>
                     </div>
                     <div class="card-body">
@@ -444,6 +526,7 @@
     }
     
     function getQualityColor(quality) {
+        if (!quality || typeof quality !== 'string') return 'secondary';
         switch(quality.toLowerCase()) {
             case 'high': return 'success';
             case 'medium': return 'warning';

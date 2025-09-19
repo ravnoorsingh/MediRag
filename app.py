@@ -174,47 +174,74 @@ def patient_summary():
 
 @app.route('/clinical/query', methods=['POST'])
 def clinical_query():
-    """Process clinical query and return decision support"""
+    """Process clinical query and return evidence-based recommendations"""
     try:
-        # Get patient data from session
-        patient_data = session.get('patient_data')
-        if not patient_data:
-            return jsonify({
-                'error': 'No patient data available. Please upload patient information first.'
-            }), 400
+        print(f"🔍 Clinical query endpoint called")
+        print(f"📊 Request method: {request.method}")
+        print(f"📊 Content type: {request.content_type}")
+        print(f"📊 Request data: {request.get_data()}")
         
-        # Get query parameters
-        clinical_question = request.json.get('clinical_question', '').strip()
-        chief_complaint = request.json.get('chief_complaint', patient_data.get('chief_complaint', '')).strip()
-        urgency = request.json.get('urgency', 'routine')
+        # Get request data
+        if request.content_type != 'application/json':
+            print(f"❌ Invalid content type: {request.content_type}")
+            return jsonify({'error': 'Content-Type must be application/json'}), 400
+            
+        data = request.get_json()
+        print(f"📊 Parsed JSON data: {data}")
         
-        if not clinical_question:
+        if not data:
+            print(f"❌ No JSON data received")
+            return jsonify({'error': 'No query data provided'}), 400
+            
+        # Extract query and other parameters
+        query = data.get('clinical_question', data.get('query', '')).strip()
+        chief_complaint = data.get('chief_complaint', '').strip()
+        urgency = data.get('urgency', 'routine')
+        
+        print(f"📊 Extracted query: '{query}'")
+        print(f"📊 Extracted chief_complaint: '{chief_complaint}'")
+        print(f"📊 Extracted urgency: '{urgency}'")
+        
+        if not query:
+            print(f"❌ Empty query received")
             return jsonify({'error': 'Clinical question is required'}), 400
         
-        # Process query through clinical decision engine
-        print(f"🔍 Processing clinical query: {clinical_question}")
+        # Get patient context from session
+        patient_context = session.get('patient_data')
+        print(f"📊 Patient context available: {bool(patient_context)}")
         
+        if not patient_context:
+            print(f"❌ No patient data in session")
+            return jsonify({'error': 'No patient data found in session. Please upload patient data first.'}), 400
+        
+        # Update patient context with current chief complaint if provided
+        if chief_complaint:
+            patient_context['chief_complaint'] = chief_complaint
+            print(f"📊 Updated chief complaint in patient context")
+        
+        print(f"🔍 Processing clinical query: {query}")
+        
+        # FIXED: Pass all required parameters to the clinical engine
         result = clinical_engine.process_clinical_query(
-            patient_data=patient_data,
-            clinical_question=clinical_question,
-            chief_complaint=chief_complaint,
+            query=query,
+            patient_context=patient_context,
+            chief_complaint=chief_complaint or patient_context.get('chief_complaint', ''),
             urgency=urgency
         )
         
-        # Store result in session for potential export
-        session['last_query_result'] = result
-        session['last_query_timestamp'] = datetime.now().isoformat()
+        # Check if result contains an error
+        if 'error' in result:
+            print(f"❌ Clinical engine returned error: {result['error']}")
+            return jsonify(result), 500
+            
+        print(f"✅ Clinical query processed successfully")
+        return jsonify(result)
         
-        return jsonify({
-            'success': True,
-            'result': result
-        })
-    
     except Exception as e:
-        print(f"Error processing clinical query: {e}")
-        return jsonify({
-            'error': f'Error processing clinical query: {str(e)}'
-        }), 500
+        print(f"❌ Error in clinical query endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 
 @app.route('/export/report')

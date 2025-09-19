@@ -1,0 +1,19 @@
+{% block title %}Error - Clinical Decision Support System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">⚠️ Error</h4>
+                <p>{{ error }}</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary">Return to Home</a>
+                    <a href="{{ url_for('patient_upload') }}" class="btn btn-secondary">Upload Patient Data</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
