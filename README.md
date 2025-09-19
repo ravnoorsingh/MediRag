@@ -57,7 +57,8 @@ A comprehensive **Medical Knowledge Graph RAG (Retrieval-Augmented Generation)**
 *Evidence-based clinical recommendations with citations*
 
 ### 📊 System Architecture Flowchart
-![System Flowchart](screenshots/architecture_flowchart.png)
+![System Flowchart](/architecture_flowchart.png)
+
 *Complete data flow and processing pipeline*
 
 ## 🚀 Quick Start
